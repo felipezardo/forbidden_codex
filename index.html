@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forbidden Codex</title>
+    <meta name="description" content="Gerenciador de Talentos e Magias para Forbidden Lands RPG">
+    
+    <!-- Fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CSS BASE --- */
+        :root {
+            --color-bg: #e3d8c4;
+            --color-paper: #fdf6e3;
+            --color-text: #2b2b2b;
+            --color-text-light: #666;
+            --color-primary: #8a1c1c;
+            --color-magic: #4a2c68;
+            --color-accent: #d4a017;
+            --color-border: #5c4a3d;
+            
+            --font-title: 'Cinzel', serif;
+            --font-body: 'Crimson Text', serif;
+            
+            --shadow-card: 2px 4px 8px rgba(0,0,0,0.2);
+            --radius: 4px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--color-bg);
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%235c4a3d' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            color: var(--color-text);
+            font-family: var(--font-body);
+            line-height: 1.5;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-md);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        /* --- HEADER --- */
+        header {
+            text-align: center;
+            border-bottom: 3px double var(--color-primary);
+            padding-bottom: var(--spacing-md);
+            position: relative;
+        }
+        header h1 {
+            margin: 0 0 5px 0;
+            line-height: 1;
+        }
+        
+        /* ESTILO RESPONSIVO DO LOGO */
+        header h1 img {
+            max-width: 100%;      /* Garante que não estoure a tela no mobile */
+            height: auto;         /* Mantém proporção */
+            max-height: 80px;     /* Limita altura para não ocupar a tela toda (similar a 2 linhas de texto) */
+            width: auto;          /* Permite encolher se necessário */
+            display: inline-block;
+            object-fit: contain;
+        }
+        
+        @media (max-width: 600px) {
+             header h1 img {
+                max-height: 60px; /* Um pouco menor em celulares */
+             }
+        }
+
+        .reset-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: transparent;
+            border: 1px solid var(--color-primary);
+            color: var(--color-primary);
+            padding: 4px 8px;
+            cursor: pointer;
+            font-family: var(--font-title);
+            font-size: 0.8rem;
+            border-radius: 4px;
+        }
+        .reset-btn:hover { background: rgba(138,28,28,0.1); }
+
+        /* --- NAVEGAÇÃO --- */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .nav-tab {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid var(--color-border);
+            border-bottom: none;
+            border-radius: var(--radius) var(--radius) 0 0;
+            cursor: pointer;
+            font-family: var(--font-title);
+            font-size: 1.1rem;
+            color: var(--color-text-light);
+            transition: all 0.2s;
+        }
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--color-text);
+        }
+        .nav-tab.active {
+            background: var(--color-paper);
+            color: var(--color-primary);
+            border-bottom: 3px solid var(--color-primary); 
+            margin-bottom: -2px;
+            font-weight: bold;
+            position: relative;
+            z-index: 10;
+        }
+        .nav-tab.magic-tab { color: var(--color-magic); }
+        .nav-tab.magic-tab.active { color: var(--color-magic); border-color: var(--color-magic); }
+
+        /* --- PAINEL SETUP --- */
+        .setup-panel {
+            background: rgba(255, 255, 255, 0.6);
+            padding: var(--spacing-md);
+            border-radius: var(--radius);
+            border: 1px solid var(--color-border);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+            justify-content: center;
+            width: 100%;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 220px;
+        }
+        .form-group label {
+            font-family: var(--font-title);
+            font-weight: bold;
+            color: var(--color-primary);
+            margin-bottom: 4px;
+        }
+        .form-group select {
+            padding: 8px;
+            border: 2px solid var(--color-border);
+            background: var(--color-paper);
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+        }
+        .rules-hint {
+            font-size: 0.95rem;
+            color: var(--color-primary);
+            background: rgba(138, 28, 28, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-style: italic;
+            border: 1px solid rgba(138, 28, 28, 0.2);
+            text-align: center;
+            max-width: 800px;
+            display: none; 
+        }
+        .rules-hint.active {
+            display: block !important;
+        }
+
+        /* --- LAYOUT DE CONTEÚDO --- */
+        .view-section {
+            display: none !important; 
+            width: 100%;
+        }
+
+        /* Quando a aba de talentos está ativa */
+        #tab-talents.active {
+            display: grid !important;
+            grid-template-columns: 1fr;
+            gap: var(--spacing-lg);
+        }
+        
+        /* Quando a aba de magias está ativa */
+        #tab-magic.active {
+            display: block !important;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        .hidden { display: none !important; }
+
+        @media (min-width: 900px) {
+            #tab-talents.active { 
+                grid-template-columns: 2fr 1fr; 
+                align-items: start; 
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- CARDS --- */
+        .talent-card, .spell-card {
+            background: var(--color-paper);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
+        }
+        .talent-card { position: relative; border-top: 4px solid var(--color-primary); }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(92, 74, 61, 0.2);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+        .card-header h3 {
+            font-family: var(--font-title);
+            color: #000;
+            font-size: 1.3rem;
+            margin: 0;
+        }
+        .type-badge {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: var(--color-primary);
+            letter-spacing: 1px;
+        }
+
+        /* Ranks Description */
+        .rank-desc {
+            margin-bottom: 8px;
+            padding: 6px;
+            border-radius: 4px;
+            font-size: 1rem;
+            border-left: 3px solid transparent;
+        }
+        .rank-desc strong {
+            display: block;
+            font-family: var(--font-title);
+            font-size: 0.85rem;
+            color: var(--color-border);
+            margin-bottom: 2px;
+        }
+        .rank-desc.active {
+            color: var(--color-text);
+            background-color: rgba(212, 160, 23, 0.15);
+            border-left-color: var(--color-accent);
+        }
+        .rank-desc.inactive { color: var(--color-text-light); }
+
+        /* Footer Cards */
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 8px;
+            border-top: 1px dashed rgba(92, 74, 61, 0.3);
+        }
+        .rank-tracker { display: flex; align-items: center; gap: 6px; }
+        .rank-tracker span { font-family: var(--font-title); font-size: 0.9rem; font-weight: bold; }
+        .rank-dots { display: flex; gap: 4px; }
+        .rank-dot {
+            width: 20px; height: 20px;
+            border: 2px solid var(--color-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: bold;
+            color: var(--color-primary);
+            transition: all 0.2s;
+        }
+        .rank-dot:hover { background: rgba(138, 28, 28, 0.1); }
+        .rank-dot.active { background: var(--color-primary); color: #fff; }
+        
+        button.remove-btn {
+            background: none;
+            border: 1px solid var(--color-primary);
+            color: var(--color-primary);
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: var(--font-title);
+            font-size: 0.8rem;
+        }
+        button.remove-btn:hover { background: var(--color-primary); color: #fff; }
+
+        /* --- SIDEBAR LIST --- */
+        #general-pool {
+            background: rgba(255,255,255,0.5);
+            padding: var(--spacing-md);
+            border-radius: var(--radius);
+            height: fit-content;
+            border: 1px solid var(--color-border);
+        }
+        #general-pool h2 {
+            font-family: var(--font-title);
+            font-size: 1.2rem;
+            margin-bottom: var(--spacing-md);
+            color: var(--color-border);
+            border-bottom: 1px solid var(--color-border);
+        }
+        .search-bar {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: var(--spacing-md);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            font-family: var(--font-body);
+            font-size: 1rem;
+        }
+        .pool-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .pool-item {
+            background: var(--color-paper);
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 2px;
+            transition: all 0.2s;
+        }
+        .pool-item:hover { border-color: var(--color-primary); transform: translateX(2px); }
+        .pool-item.added {
+            opacity: 0.6; background: #e8e4da; color: #888; cursor: default;
+        }
+        .pool-item.added:hover { transform: none; border-color: #ccc; }
+        .plus-icon { color: var(--color-primary); font-weight: bold; }
+
+        /* --- GRIMÓRIO (MAGIAS) --- */
+        #grimoire-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--spacing-md);
+        }
+        @media (min-width: 768px) {
+            #grimoire-container {
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            }
+        }
+
+        .discipline-header {
+            grid-column: 1 / -1;
+            font-family: var(--font-title);
+            color: var(--color-magic);
+            border-bottom: 1px solid var(--color-magic);
+            margin-top: 20px;
+            padding-bottom: 5px;
+            font-size: 1.5rem;
+        }
+
+        .spell-card {
+            border-left: 4px solid var(--color-magic);
+        }
+        .spell-card.safe { border-left-color: #2e7d32; }
+        .spell-card.risky { border-left-color: #d32f2f; }
+
+        .spell-card .card-header h3 { color: var(--color-magic); }
+        
+        .spell-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-family: var(--font-title);
+            font-size: 0.85rem;
+            color: var(--color-text-light);
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed rgba(0,0,0,0.1);
+        }
+        .spell-meta span {
+            background: rgba(0,0,0,0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .spell-meta b { color: var(--color-text); }
+
+        .spell-status {
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .status-safe { color: #2e7d32; background: rgba(46, 125, 50, 0.1); }
+        .status-risky { color: #d32f2f; background: rgba(211, 47, 47, 0.1); }
+
+        .empty-state {
+            text-align: center;
+            color: var(--color-text-light);
+            padding: 40px;
+            border: 2px dashed rgba(92, 74, 61, 0.3);
+            border-radius: var(--radius);
+            font-style: italic;
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <h1><img src="./logo.png" alt="Logo forbidden-lands"></h1>
+        
+        <button class="reset-btn" onclick="resetSheet()">Limpar</button>
+    </header>
+
+    <nav class="nav-tabs">
+        <button id="tab-btn-talents" class="nav-tab active" onclick="switchTab('talents')">Talentos</button>
+        <button id="tab-btn-magic" class="nav-tab magic-tab hidden" onclick="switchTab('magic')">Grimório de Magias</button>
+    </nav>
+
+    <section class="setup-panel">
+        <div class="controls">
+            <div class="form-group">
+                <label for="kin-select">Ascendência</label>
+                <select id="kin-select">
+                    <option value="">-- Selecione --</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="profession-select">Profissão</label>
+                <select id="profession-select">
+                    <option value="">-- Selecione --</option>
+                </select>
+            </div>
+        </div>
+        
+        <div id="rule-hint-talent" class="rules-hint view-section active">
+            Regra: Ao escolher uma profissão, você ganha os 3 talentos iniciais, mas <strong>deve manter apenas 1 (Nível 1)</strong>. Remova os extras.
+        </div>
+        <div id="rule-hint-magic" class="rules-hint view-section">
+            Regra: Você conhece todas as Magias Gerais e todas as magias das disciplinas que possui o talento (Nível igual ou menor). Lançar acima do seu nível é possível, mas arriscado.
+        </div>
+    </section>
+
+    <!-- ABA TALENTOS -->
+    <div id="tab-talents" class="content-area view-section active">
+        <main id="player-deck">
+            <div id="cards-container">
+                <div class="empty-state">
+                    Selecione sua Ascendência e Profissão acima para revelar seus talentos.
+                </div>
+            </div>
+        </main>
+
+        <aside id="general-pool">
+            <h2>Talentos Gerais</h2>
+            <input type="text" id="search-talents" class="search-bar" placeholder="Buscar...">
+            <div id="pool-list" class="pool-list"></div>
+        </aside>
+    </div>
+
+    <!-- ABA MAGIAS -->
+    <div id="tab-magic" class="view-section">
+        <div id="grimoire-container">
+            <!-- Magias serão renderizadas aqui -->
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const STORAGE_KEY = 'fl_talents_sheet_v2'; 
+    
+    const db = {
+        kins: {
+            "Humano": { 
+                name: "Adaptável",
+                ranks: { 1: "Se você gastar um Ponto de Força de Vontade quando estiver prestes a rolar para uma perícia, você pode rolar para qualquer outra perícia de sua escolha para alcançar o mesmo resultado. Você precisa estar apta a justificar como você usa a perícia escolhida. A MdJ tem a palavra final, mas deve facilitar o uso do talento." }
+            },
+            "Elfo": { 
+                name: "Paz Interior",
+                ranks: { 1: "Ao gastar um PFV, você pode entrar em um estado de meditação profunda. Isso dura por um Quarto de Dia, durante o qual você não pode ser perturbada. Quando você emergir da meditação, você será curada de todo dano e de qualquer ferimento grave, exceto por membros perdidos." }
+            },
+            "Meio-Elfo": { 
+                name: "Poder Mental",
+                ranks: { 1: "A cada vez que você gasta Pontos de Força de Vontade para ativar um talento ou lançar uma magia, o primeiro PFV conta como dois. Se você gastar dois PFV, eles contam como três e assim por diante. Note que isso também aumenta o risco de infortúnio mágico." }
+            },
+            "Anão": { 
+                name: "Bravura Indômita",
+                ranks: { 1: "Você pode forçar a rolagem de dados múltiplas vezes ao gastar Pontos de Força de Vontade. Cada ponto gasto permite que você force a rolagem mais uma vez." }
+            },
+            "Halfling": { 
+                name: "Difícil de Acertar",
+                ranks: { 1: "Você pode gastar Pontos de Força de Vontade em combate para evitar ser atingida por ataques físicos. Cada PFV gasto elimina um X da rolagem do atacante." }
+            },
+            "Lupino": { 
+                name: "Instintos de Caçador",
+                ranks: { 1: "Você pode gastar Pontos de Força de Vontade para designar uma pessoa ou uma criatura como sua presa. A presa precisa estar dentro do seu campo de visão ou deve haver um odor para você seguir. O número de PFV que você gasta é igual ao número de dias que você pode seguir o rastro de cheiro da presa. Em combate, todos os ataques contra a presa recebem um bônus de +1 por PFV gasto." }
+            },
+            "Orc": { 
+                name: "Imbatível",
+                ranks: { 1: "Quando você ficar Acabada por qualquer tipo de dano, poderá gastar Pontos de Força de Vontade para imediatamente ficar de pé. Para cada ponto gasto, você recupera um ponto no atributo Acabado. Não afeta ferimentos graves." }
+            },
+            "Goblin": { 
+                name: "Noturno",
+                ranks: { 1: "Você pode ver no escuro. Além disso, quando rolar para FURTIVIDADE em um ambiente escuro ou parcialmente iluminado, você pode gastar Pontos de Força de Vontade que são automaticamente transformados em X extra." }
+            }
+        },
+        
+        professions: {
+            "Caçador": ["Caminho da Fera", "Caminho da Flecha", "Caminho da Floresta"],
+            "Druida": ["Caminho da Cura", "Caminho da Visão", "Caminho do Metamorfo"],
+            "Feiticeiro": ["Caminho da Morte", "Caminho das Rochas", "Caminho do Sangue", "Caminho dos Símbolos"],
+            "Ginete": ["Caminho das Planícies", "Caminho do Cavaleiro", "Caminho do Companheiro"],
+            "Guerreiro": ["Caminho da Lâmina", "Caminho do Escudo", "Caminho do Inimigo"],
+            "Ladino": ["Caminho do Matador", "Caminho do Rosto", "Caminho do Veneno"],
+            "Mascate": ["Caminho da Mentira", "Caminho das Muitas Coisas", "Caminho do Ouro"],
+            "Menestrel": ["Caminho da Canção", "Caminho do Grito de Guerra", "Caminho do Hino"]
+        },
+
+        professionTalents: {
+            // MENESTREL
+            "Caminho da Canção": {
+                ranks: { 
+                    1: "Ao gastar um Ponto de Força de Vontade e cantar, você pode chamar a atenção de todos dentro da distância PERTO por alguns minutos. Eles param o que estiverem fazendo, e qualquer rolagem de PATRULHA que eles façam é negativamente modificada pelo número de PFV que você gastou. Isso não tem efeito em combate.", 
+                    2: "Como na categoria 1, mas você também pode persuadir sua audiência a pagar pela música. Eles pagarão o que puderem até um número de peças de prata igual ao número de PFV que você gastou.", 
+                    3: "Você pode cantar tão poderosamente que sua música rasga os ouvidos de qualquer ouvinte dentro de uma distância CURTA. A sua canção causa um ponto de dano de Força por PFV gasto. Você pode distribuir o dano por quantos oponentes desejar. Os alvos podem tentar resistir ao efeito rolando DISCERNIMENTO - cada X rolado nega um ponto de dano. Não há efeito contra monstros." 
+                }
+            },
+            "Caminho do Grito de Guerra": {
+                ranks: { 
+                    1: "Você pode emitir um grito de guerra que dá a todas as suas camaradas dentro da distância CURTA um bônus em todos os ataques por uma rodada até que seja a sua vez de agir novamente na rodada seguinte. As rolagens delas são modificadas em +1 para cada PFV que você gastou.", 
+                    2: "Você pode emitir um rugido que modifica os ataques corpo a corpo de todos os oponentes que estejam na distância CURTA até que seja a sua vez de agir novamente na próxima rodada. As rolagens deles são modificadas em -1 para cada PFV que você gastou. Note que não há efeito contra monstros.", 
+                    3: "O seu grito pode instilar medo no coração do mais selvagem dos oponentes. O seu grito causa um ponto de dano em Astúcia em um único oponente dentro da distância CURTA para cada PFV que você gastou. O alvo pode tentar resistir ao efeito rolando DISCERNIMENTO - cada X rolado nega um ponto de dano. Não há efeito contra monstros." 
+                }
+            },
+            "Caminho do Hino": {
+                ranks: { 
+                    1: "Você pode ajudar uma camarada que esteja Acabada dentro de uma distância CURTA a ficar de pé. Para cada PFV que você gastar, sua camarada recupera um ponto do atributo que foi reduzido a zero.", 
+                    2: "Um número de suas camaradas, igual ao número de PFV que você gastar, desde que dentro de uma distância CURTA, recuperam um ponto de dano em um atributo. Você decide qual atributo todas elas recuperam.", 
+                    3: "As suas canções dão uma parte do seu poder para suas camaradas dentro da distância LONGA. Você simplesmente dá um número de PFV à sua escolha para uma amiga. O talento de ascendência meio-élfica PODER MENTAL não pode ser combinado com esse efeito." 
+                }
+            },
+            
+            // CAÇADOR
+            "Caminho da Fera": {
+                ranks: { 
+                    1: "Seu animal pode realizar reconhecimentos para você. Você pode gastar um Ponto de Força de Vontade para enviar o animal à frente a fim de checar um local nos arredores, e ele avisará se há uma ameaça por perto.", 
+                    2: "Seu animal pode ajudar quando você estiver Acabada. A cada PFV gasto, você recupera um ponto do atributo que atingiu zero. Você não pode usar esse efeito se não estiver Acabada.", 
+                    3: "Você pode enviar o seu animal para lutar por você. Se você gastar um PFV quando chegar a sua vez em uma luta, o animal também irá lutar e seguir suas ordens por uma rodada, na sua vez da ordem de iniciativa. Role normalmente os ataques do animal." 
+                }
+            },
+            "Caminho da Flecha": {
+                ranks: { 
+                    1: "Quando você atinge com um ataque usando uma arma à distância, você pode gastar um Ponto de Força de Vontade para encontrar uma brecha na armadura ou armadura natural de seu oponente. A armadura não oferece nenhuma proteção contra seu ataque.", 
+                    2: "Quando tiver usado todas as suas ações em uma rodada, você pode gastar um PFV para imediatamente atacar de novo usando uma arma à distância. No entanto, a arma precisa ter sido PREPARADA antes, e você pode fazer isso apenas uma vez por rodada.", 
+                    3: "Quando você atinge com um ataque usando uma arma à distância, você pode aumentar o dano. Para cada PFV gasto, você aumenta o dano em um. Você precisa declarar quantos PFV você usa antes que o seu oponente faça a rolagem de armadura." 
+                }
+            },
+            "Caminho da Floresta": {
+                ranks: { 
+                    1: "Quando você COLETA, CAÇA ou DESBRAVA, você é automaticamente bem-sucedida se gastar um Ponto de Força de Vontade. Você pode fazer a rolagem primeiro e só gastar o ponto caso falhe.", 
+                    2: "Quando você faz uma rolagem para resistir ao frio, você é automaticamente bem-sucedida se gastar um PFV. Você pode fazer a rolagem antes e só gastar o ponto caso falhe.", 
+                    3: "Ao gastar PFV, você não precisa comer ou beber durante um dia inteiro." 
+                }
+            },
+
+            // GUERREIRO
+            "Caminho da Lâmina": {
+                ranks: { 
+                    1: "Quando você atinge com um ataque corpo a corpo, você pode gastar um Ponto de Força de Vontade para encontrar uma brecha na armadura ou armadura natural de seu oponente. A armadura não oferece nenhuma proteção contra seu ataque.", 
+                    2: "Quando tiver usado todas as suas ações em uma rodada, você pode gastar um PFV para imediatamente atacar de novo corpo a corpo. Você pode fazer isso apenas uma vez por rodada.", 
+                    3: "Quando você atinge com um ataque corpo a corpo, você pode aumentar o dano. Para cada PFV gasto, você aumenta o dano em um. Você precisa declarar quantos PFV você usa antes que o seu oponente faça a rolagem de armadura." 
+                }
+            },
+            "Caminho do Escudo": {
+                ranks: { 
+                    1: "Quando um amigo dentro da distância PERTO é atacado, você pode gastar um Ponto de Força de Vontade para BLOQUEAR o ataque por ele. O seu BLOQUEAR segue as regras normais e conta como uma das suas ações na rodada.", 
+                    2: "Quando você BLOQUEIA, você pode imediatamente gastar um PFV para não contar o BLOQUEAR como uma das suas ações na rodada, mesmo realizando-o. Você pode fazer isso múltiplas vezes em uma rodada, desde que tenha PFV para gastar.", 
+                    3: "Quando você é bem-sucedida em um BLOQUEAR, você pode diminuir ainda mais o dano ao gastar PFV. A cada ponto gasto você diminui o dano em um. Você precisa declarar quantos PFV você usa antes de fazer a rolagem de armadura." 
+                }
+            },
+            "Caminho do Inimigo": {
+                ranks: { 
+                    1: "Se você gastar um Ponto de Força de Vontade quando você e seu oponente escolhem suas combinações ocultas, o seu oponente precisa escolher a combinação dele antes e então revelar a primeira ou segunda carta antes que você escolha a sua própria combinação. O seu oponente escolhe qual carta revelar.", 
+                    2: "Como a categoria 1, mas você é quem escolhe qual carta o seu oponente revela, a primeira ou a segunda.", 
+                    3: "Como a categoria 1, mas o oponente precisa revelar ambas as ações antes de você escolher as suas próprias." 
+                }
+            },
+
+            // LADINO
+            "Caminho do Matador": {
+                ranks: { 
+                    1: "Quando você tem sucesso em um ATAQUE FURTIVO, você pode gastar Pontos de Força de Vontade para aumentar o dano. A cada PFV gasto, você aumenta o dano em 1.", 
+                    2: "Ao gastar um PFV, você pode se soltar de qualquer tipo de amarra ou algema e pode se espremer pelas menores frestas, mesmo aquelas com alguns centímetros de largura.", 
+                    3: "Você pode obrigar os outros a fazerem sua vontade através de hipnose. Ao gastar PFV, você pode fazer com que sua vítima realize uma ação específica no momento que você escolher. Você precisa falar com o seu oponente por alguns minutos para usar esse talento. Você não pode forçar sua vítima a ferir a si mesma." 
+                }
+            },
+            "Caminho do Rosto": {
+                ranks: { 
+                    1: "Ao gastar um Ponto de Força de Vontade e preparar-se por um momento, você assume a aparência de outra pessoa, mas não sua voz ou seus trejeitos. A pessoa precisa ser do mesmo gênero e ascendência que você. Qualquer um que conheça a pessoa e veja você dentro da distância PERTO pode descobrir a farsa ao rolar DISCERNIMENTO. A cada PFV extra que você gasta ao criar o disfarce, modifique as rolagens de qualquer um que a veja em -1.", 
+                    2: "Como na categoria 1, mas você também imita a voz e os trejeitos. Se você falar com alguém que conhece a pessoa sendo imitada, esse alguém pode perceber a farsa da mesma forma descrita na categoria 1.", 
+                    3: "Você pode assumir completamente a aparência de outra pessoa, mesmo que seja de outro gênero ou ascendência. Os outros aspectos, trate como a categoria 2." 
+                }
+            },
+            "Caminho do Veneno": {
+                ranks: { 
+                    1: "Ao gastar um Ponto de Força de Vontade, você pode sacar uma dose de veneno letal com uma Potência igual ao número de PFV que você gastou multiplicado por 3.", 
+                    2: "Como na categoria 1, mas você pode escolher outros tipos de veneno.", 
+                    3: "Como na categoria 2, mas você pode escolher que o veneno já esteja aplicado em sua arma, por exemplo, logo antes de um ataque. Usar esse talento não conta como uma ação." 
+                }
+            },
+
+            // MASCATE
+            "Caminho da Mentira": {
+                ranks: { 
+                    1: "Se você gastar um Ponto de Força de Vontade ao falar com um PNJ, a MdJ precisa revelar se o PNJ está mentindo ou não. A MdJ não precisa revelar sobre o que exatamente o PNJ está mentindo.", 
+                    2: "Quando você MANIPULA um PNJ para fazer com que ele acredite no que você está dizendo (independentemente de ser verdade ou não), você pode gastar um PFV para ser automaticamente bem-sucedida. Você pode rolar primeiro e usar esse talento caso falhe.", 
+                    3: "Quando você MANIPULA alguém e é bem-sucedida, você pode gastar um PFV para evitar fazer algo em troca, e o seu oponente também perde a habilidade de atacá-la. O que você estiver pedindo ainda precisa ser razoável de acordo com o julgamento da MdJ." 
+                }
+            },
+            "Caminho das Muitas Coisas": {
+                ranks: { 
+                    1: "Quando você gasta Pontos de Força de Vontade, você pode encontrar quase qualquer item da lista de bens de comércio. O item não pode ser um objeto PESADO e não pode custar mais de 1 peça de prata por PFV gasto.", 
+                    2: "Como a categoria 1, mas você também consegue encontrar armas (das tabelas de armas) em sua mochila.", 
+                    3: "Como a categoria 2, mas o item pode custar até 1 peça de ouro por PFV gasto." 
+                }
+            },
+            "Caminho do Ouro": {
+                ranks: { 
+                    1: "Quando você estiver prestes a comprar um item, você pode gastar um Ponto de Força de Vontade para negociar automaticamente um preço reduzido. O preço é diminuído em um quinto para cada PFV que você gasta. Você pode gastar um máximo de 4 PFV por item, o que diminui o preço para um quinto do original.", 
+                    2: "Quando você entra em um novo aposento, você pode gastar um PFV para detectar se existem itens valiosos no local e, caso existam, onde eles estão. Esse talento só se aplica a ouro e joias, não a artefatos únicos.", 
+                    3: "Você sempre tem ouro escondido em algum lugar. Para cada PFV que você gasta, você encontra 1 peça de ouro em um de seus bolsos, mesmo que você tenha sido revistada recentemente ou algo similar." 
+                }
+            },
+
+            // GINETE
+            "Caminho das Planícies": {
+                ranks: { 
+                    1: "Para cada Ponto de Força de Vontade que você gasta, a sua montaria pode se mover um hexágono extra em um Quarto de Dia, desde que em terreno normal. Terreno dificultoso requer dois PFV para cada hexágono extra.", 
+                    2: "Quando estiver montada, você pode gastar PFV para escapar de um combate sem rolar dados. Todas as outras limitações ainda se aplicam.", 
+                    3: "Você pode convencer sua montaria a correr em velocidades vertiginosas por um curto período de tempo. A cada PFV gasto, o Valor de Movimento de sua montaria é aumentado em um passo, mas apenas durante uma rodada." 
+                }
+            },
+            "Caminho do Cavaleiro": {
+                ranks: { 
+                    1: "Você pode gastar Pontos de Força de Vontade para comprar cartas de iniciativa extra durante a compra de iniciativa, escolhendo depois a melhor carta. A cada PFV gasto você pode comprar uma carta extra e escolher a melhor para você.", 
+                    2: "Quando montada, você pode gastar PFV para se defender contra ataques. A cada PFV gasto, você elimina um X que o inimigo tenha rolado. Você gasta os PFV antes de fazer sua rolagem de armadura.", 
+                    3: "Quando você ataca de cima de uma montaria em um combate corpo a corpo e o seu ataque é bem-sucedido, você pode gastar PFV para aumentar o dano. A cada ponto gasto, você aumenta o dano em um. Você precisa declarar quantos PFV você usa antes que o oponente faça a rolagem de armadura." 
+                }
+            },
+            "Caminho do Companheiro": {
+                ranks: { 
+                    1: "Se você gastar um Ponto de Força de Vontade quando estiver Acabada, o seu cavalo ficará ao seu lado para defende-la. O cavalo atacará qualquer oponente que tente atacar ou mover você.", 
+                    2: "O seu cavalo pode ajudá-la a ficar de pé quando você estiver Acabada. Para cada PFV que você gasta, você recupera um ponto do atributo que foi reduzido a zero. Você não pode usar esse efeito se não estiver Acabada.", 
+                    3: "O seu cavalo pode chutar oponentes quando você estiver na sela. Se você gastar um PFV quando for a sua vez de agir na rodada, o cavalo também pode atacar em combate corpo a corpo logo após sua ação. Role normalmente para o ataque do cavalo." 
+                }
+            },
+
+            // DRUIDA (MÁGICO)
+            "Caminho da Cura": {
+                isMagic: true, 
+                discipline: "Cura", 
+                ranks: { 
+                    1: "Você pode lançar magias de categoria 1 da disciplina Cura.", 
+                    2: "Você pode lançar magias de categoria 2 da disciplina Cura.", 
+                    3: "Você pode lançar magias de categoria 3 da disciplina Cura." 
+                }
+            },
+            "Caminho da Visão": {
+                isMagic: true, 
+                discipline: "Consciência", 
+                ranks: { 
+                    1: "Você pode lançar magias de categoria 1 da disciplina Consciência.", 
+                    2: "Você pode lançar magias de categoria 2 da disciplina Consciência.", 
+                    3: "Você pode lançar magias de categoria 3 da disciplina Consciência." 
+                }
+            },
+            "Caminho do Metamorfo": {
+                isMagic: true, 
+                discipline: "Metamorfose", 
+                ranks: { 
+                    1: "Você pode lançar magias de categoria 1 da disciplina Metamorfose.", 
+                    2: "Você pode lançar magias de categoria 2 da disciplina Metamorfose.", 
+                    3: "Você pode lançar magias de categoria 3 da disciplina Metamorfose." 
+                }
+            },
+
+            // FEITICEIRO (MÁGICO)
+            "Caminho da Morte": {
+                isMagic: true, 
+                discipline: "Magia da Morte", 
+                ranks: { 
+                    1: "Você pode lançar magias de categoria 1 da disciplina Magia da Morte.", 
+                    2: "Você pode lançar magias de categoria 2 da disciplina Magia da Morte.", 
+                    3: "Você pode lançar magias de categoria 3 da disciplina Magia da Morte." 
+                }
+            },
+            "Caminho das Rochas": {
+                isMagic: true, 
+                discipline: "Canção da Pedra", 
+                ranks: { 
+                    1: "Você pode lançar magias de categoria 1 da disciplina Canção da Pedra.", 
+                    2: "Você pode lançar magias de categoria 2 da disciplina Canção da Pedra.", 
+                    3: "Você pode lançar magias de categoria 3 da disciplina Canção da Pedra." 
+                }
+            },
+            "Caminho do Sangue": {
+                isMagic: true, 
+                discipline: "Magia de Sangue", 
+                ranks: { 
+                    1: "Você pode lançar magias de categoria 1 da disciplina Magia de Sangue.", 
+                    2: "Você pode lançar magias de categoria 2 da disciplina Magia de Sangue.", 
+                    3: "Você pode lançar magias de categoria 3 da disciplina Magia de Sangue." 
+                }
+            },
+            "Caminho dos Símbolos": {
+                isMagic: true, 
+                discipline: "Simbolismo", 
+                ranks: { 
+                    1: "Você pode lançar magias de categoria 1 da disciplina Simbolismo.", 
+                    2: "Você pode lançar magias de categoria 2 da disciplina Simbolismo.", 
+                    3: "Você pode lançar magias de categoria 3 da disciplina Simbolismo." 
+                }
+            },
+            
+            "default": { ranks: { 1: "Efeito da Categoria 1.", 2: "Efeito da Categoria 2.", 3: "Efeito da Categoria 3." } }
+        },
+
+        spells: {
+            "Gerais": [
+                { name: "Selo Mágico", rank: 1, range: "Ao Alcance das Mãos", dur: "Um Quarto de Dia", ing: "Pedaço de giz", desc: "Usando essa magia, você protege uma pessoa ou um local (que não seja maior do que um humano) contra magia. O Nível de Poder de qualquer magia lançada contra aquela pessoa ou lugar durante um Quarto de Dia é diminuído pelo Nível de Poder do SELO MÁGICO." },
+                { name: "Sentir Magia", rank: 1, range: "Curto", dur: "Imediata", ing: "Vara de adivinhação", desc: "Como uma Feiticeira ou Druida, você automaticamente percebe quando alguém usa magia dentro da distância CURTA ou menos, ou quando um item que você segura está carregado com poder mágico. Se quiser saber mais sobre o tipo de magia envolvida, você precisa lançar uma magia de SENTIR MAGIA. Usar essa magia também é requisito para detectar magia OBSCURECIDA — o seu Nível de Poder deve então ser igual ou maior que o Nível de Poder da magia OBSCURECER MAGIA." },
+                { name: "Dissipar Magia", rank: 2, range: "Curto", dur: "Imediata", ing: "Pó de ferro", desc: "Você pode interferir com a magia lançada por outro usuário de magia. Essa magia é reativa e quebra a ordem de iniciativa da rodada. Você diminui o Nível de Poder da magia de seu oponente pelo Nível de Poder de seu DISSIPAR MAGIA. Se o resultado é zero ou menos, a magia de seu oponente não tem nenhum efeito. Vocês dois devem rolar para sobrecarga e infortúnio mágico. Você precisa decidir quantos PFV você gasta em seu DISSIPAR MAGIA antes de ambos rolarem. (Palavra de Poder)" },
+                { name: "Obscurecer Magia", rank: 2, range: "Pessoal", dur: "Imediata", ing: "Pedaço de tecido", desc: "Se você quer lançar uma magia sem que ela seja notada, precisa OBSCURECER a magia. Isso requer 1 Ponto de Força de Vontade extra, que não conta para o Nível de Poder da magia. OBSCURECER a magia não conta como uma ação em si. Para detectar sua magia OBSCURECIDA, outro usuário de magia deve inspecionar a área ativamente lançando SENTIR MAGIA." },
+                { name: "Vincular Magia", rank: 3, range: "Pessoal", dur: "Variada", ing: "Pena de escrita ou um pequeno cinzel", desc: "Feiticeiros e Druidas hábeis podem VINCULAR magias a objetos inanimados para criar armadilhas mágicas ou poderosos artefatos mágicos. Você lança a magia como qualquer outra e escolhe quantos Pontos de Força de Vontade gasta, mas você também precisa gastar um PFV extra para vincular sua magia ao objeto em vez de liberar seu poder imediatamente. Rituais não podem ser VINCULADOS. Role para qualquer sobrecarga ou infortúnio mágico quando a magia for VINCULADA. O PFV extra afeta essa rolagem, mas não conta para o Nível de Poder. Se você gasta um PFV adicional, a magia fica por um dia ou até que seja acionada. Se você gasta dois PFV adicionais, a magia fica para sempre, mas se dissipa quando for acionada. Gastar cinco PFV adicionais vincula a magia ao objeto para sempre, e pode ser acionada uma vez ao dia com um custo de PFV igual ao Nível de Poder. Você pode vincular a magia quando você quiser, e você decide como ela é acionada. Métodos comuns incluem uma certa frase sendo pronunciada ou que o objeto seja aberto, quebrado ou jogado no chão. Uma vez que a magia é acionada, ela tem o mesmo efeito que teria caso fosse lançada normalmente. (Ritual)" },
+                { name: "Transferência", rank: 3, range: "Ao Alcance das Mãos", dur: "Imediata", ing: "Uma gota de seu sangue", desc: "Você pode usar essa magia para roubar Pontos de Força de Vontade de outros ou para conceder PFV para alguém. O custo base para lançar a magia é um PFV, e você pode dar ou receber quantos PFV quiser. Se o seu alvo se opõe à TRANSFERÊNCIA, as coisas não são tão fáceis — nesse caso, você não pode transferir mais PFV do que o Nível de Poder da TRANSFERÊNCIA. Os PFV usados para lançar a TRANSFERÊNCIA são gastos e não são transferidos." }
+            ],
+            "Cura": [
+                { name: "Cura da Natureza", rank: 1, range: "Ao Alcance das Mãos", dur: "Imediata", ing: "Ervas medicinais", desc: "Você cura uma doença ou os efeitos de um veneno em você mesma ou em outra pessoa. O Nível de Poder de sua magia precisa ser igual ou maior que a Virulência da doença ou que a Potência do veneno dividida por 3 e arredondada para baixo." },
+                { name: "Mãos que Curam", rank: 1, range: "Ao Alcance das Mãos", dur: "Imediata", ing: "Argila", desc: "Você pode curar dano em Força ou Agilidade ao colocar suas mãos sobre os feridos. Você cura imediatamente um número de pontos igual ao Nível de Poder. Essa magia não afeta ferimentos graves, e você não pode curar a si mesma." },
+                { name: "Purificar Espírito", rank: 1, range: "Ao Alcance das Mãos", dur: "Imediata", ing: "Vela acesa", desc: "Você pode concentrar as forças da natureza a fim de iluminar almas obscuras. Você imediatamente cura um número de pontos em Astúcia ou Empatia que é igual ao Nível de Poder da sua magia. Você não pode curar a si mesma." },
+                { name: "Banir Demônios", rank: 2, range: "Perto", dur: "Imediata", ing: "Símbolo sagrado", desc: "Criaturas demoníacas de outros mundos foram soltas sobre as Terras Proibidas e agora a estão devastando. Você conhece a arte de mandar essas abominações de volta para o lugar delas. Essa magia causa dano em Força igual ao Nível de Poder em um alvo demoníaco. Isso inclui demônios que não sofrem dano por armas físicas. A magia não tem efeito sobre criaturas com características ou mutações demoníacas, apenas demônios verdadeiros." },
+                { name: "Fechar Ferimentos", rank: 2, range: "Ao Alcance das Mãos", dur: "Imediata", ing: "Musgo branco", desc: "Você pode usar magia para curar ossos quebrados e feridas sangrando. Essa magia cura imediatamente um ferimento grave. Um ferimento letal requer Nível de Poder 2. No entanto, membros perdidos não podem ser regenerados." },
+                { name: "Purgar Morto-vivo", rank: 2, range: "Perto", dur: "Imediata", ing: "Símbolo sagrado", desc: "Os mortos se erguendo de suas covas são uma violação à ordem natural e precisam ser detidos. Essa magia causa dano em Força igual ao Nível de Poder em um alvo morto-vivo." },
+                { name: "Mestre do Clima", rank: 3, range: "Distante", dur: "Um Quarto de Dia", ing: "Pena", desc: "Você é tão sintonizada com as forças da natureza que pode invocar mudanças climáticas drásticas no hexágono do mapa em que você está. Uma pequena mudança, de tempo fechado para chuva ou de calmaria total para uma brisa leve, requer Nível de Poder 1. Fenômenos climáticos incomuns, mas que estão dentro do que é possível para a estação — uma nevasca no inverno, um calor escaldante no verão ou ventos e chuvas fortes no outono —, precisam de Nível de Poder 2. Para invocar um clima completamente anormal, como uma nevasca no verão ou uma onda de calor no meio do inverno, é necessário Nível de Poder 3." },
+                { name: "Ressurreição", rank: 3, range: "Ao Alcance das Mãos", dur: "Imediata", ing: "Item pertencente ao alvo", desc: "Você pode canalizar as forças da natureza para ressuscitar uma pessoa morta — não como morta-viva, mas verdadeiramente viva. Quanto mais tempo se passou desde que o alvo morreu, mais difícil será. Dentro do mesmo Quarto de Dia, a magia requer Nível de Poder 1; dentro de um mesmo dia inteiro, requer Nível de Poder 2; e, dentro de uma semana, requer Nível de Poder 3. Caso mais de uma semana tenha se passado, o corpo já se decompôs demais para ser RESSUSCITADO. Uma pessoa trazida de volta à vida perde um ponto de Empatia permanentemente, pois ter visto o mundo além do véu mudará a visão de vida dela para sempre." },
+                { name: "Serenidade", rank: 3, range: "Perto", dur: "Imediata", ing: "Amuleto", desc: "Você espalha harmonia e serenidade ao seu redor com essa magia, o que ajuda em conflitos sociais. A vítima da magia fará o que você quiser sem uma rolagem de MANIPULAÇÃO e sem que você precise dar algo em troca. Todas as outras restrições para conflitos sociais se aplicam — por exemplo, a vítima não vai agir diretamente contra os próprios interesses. A magia só pode ser utilizada contra humanoides vivos." }
+            ],
+            "Metamorfose": [
+                { name: "Língua dos Animais", rank: 1, range: "Perto", dur: "Um turno (15 minutos)", ing: "Garra ou presa", desc: "Essa magia permite que você fale com mamíferos. Você pode fazer um número de perguntas igual ao Nível de Poder da magia. O animal pode dizer o que ele viu, ouviu ou farejou — mas eles não entendem o mundo como os humanoides, então suas respostas podem ser difíceis de interpretar. A maior vantagem é que eles nunca mentem." },
+                { name: "Olhos de Falcão", rank: 1, range: "Distante", dur: "Um turno (15 minutos)", ing: "Garra de pássaro", desc: "Você pode unir sua mente com a de um falcão e ganhar uma visão inumana. Você pode enxergar os detalhes de qualquer coisa até uma distância DISTANTE, tudo de horizonte a horizonte. Você vê todos os detalhes e pode identificar pessoas específicas." },
+                { name: "Patas de Gato", rank: 1, range: "Pessoal", dur: "Imediata", ing: "Garra de gato", desc: "Você pode unir sua mente com o espírito de um gato para se mover sem fazer barulho. Você pode lançar essa magia em vez de rolar FURTIVIDADE, e será bem-sucedida automaticamente. Cada Nível de Poder conta como um X." },
+                { name: "Garra de Urso", rank: 2, range: "Ao Alcance das Mãos", dur: "Imediata", ing: "Garra de urso", desc: "Você pode atingir seu inimigo com a força de um grande urso. Você atinge automaticamente e causa dano igual ao Nível de Poder. O ataque não pode ser BLOQUEADO ou ESQUIVADO, mas a armadura tem efeito normalmente." },
+                { name: "Mestre das Feras", rank: 2, range: "Perto", dur: "Um turno (15 minutos)", ing: "Garra ou presa", desc: "Você pode dobrar a vontade dos animais, tanto selvagens quanto adestrados. Os animais podem, por exemplo, parar um ataque, rastrear um inimigo, correr até onde você deseja para entregar uma mensagem, deixar que você os use como montaria ou até mesmo atacar seus oponentes. Você não pode controlar um animal que possua uma Força maior do que duas vezes o Nível de Poder. O Nível de Poder precisa estar um passo acima se o animal estiver agitado, assustado ou em combate. Se você fizer o animal agir de uma forma que esteja em desacordo com seu comportamento natural — como fazendo truques ou malabarismos, por exemplo —, o Nível de Poder precisa ser um passo acima. Você só consegue controlar um animal por vez. Essa magia não pode ser usada contra monstros." },
+                { name: "Velocidade do Cervo", rank: 2, range: "Pessoal", dur: "Imediata", ing: "Chifre de cervo", desc: "Você pode correr com a velocidade de um cervo por curtas distâncias. Essa magia permite que você CORRA (uma ação) com um Valor de Movimento igual ao Nível de Poder mais um. Lançar essa magia não conta como uma ação em si. Role sobrecarga/infortúnio logo antes de começar a se mover." },
+                { name: "Alma Primitiva", rank: 3, range: "Longo", dur: "Um turno (15 minutos)", ing: "Garra ou presa", desc: "Você pode acordar emoções primais na mente dos outros. O Nível de Poder precisa ser igual ou maior do que o valor atual de Astúcia da vítima. Por exemplo, você pode induzir a fúria de um javali, a preguiça de um gato ou a timidez de um pardal. A MdJ determina exatamente como a vítima reage. Se você quer afetar o humor de uma multidão de maneira mais geral, uma pequena multidão requer Nível de Poder 2, uma multidão grande requer Nível de Poder 3 e uma aldeia inteira requer Nível de Poder 4." },
+                { name: "Forma Animal", rank: 3, range: "Pessoal", dur: "Imediata", ing: "Garra ou presa", desc: "Você pode se metamorfosear por completo e assumir a forma de um animal. Escolha um animal da tabela na página 126 do Guia do Mestre. Você não pode escolher um animal com Força maior do que duas vezes o Nível de Poder. Você recebe a Força e a Agilidade do animal enquanto estiver na forma dele. A desvantagem é que você perde a habilidade de falar e também parte de sua capacidade mental, com a consequência de que sua Astúcia e Empatia caem para 1 ponto cada enquanto nessa forma. Você também tem acesso aos ataques naturais do animal. Retornar para sua forma natural requer outro lançamento dessa magia." }
+            ],
+            "Consciência": [
+                { name: "Luminífera", rank: 1, range: "Perto", dur: "Um turno por Nível de Poder", ing: "Varinha (pode ser reutilizada)", desc: "Você invoca uma luz brilhante que dissipa todas as sombras dentro da distância PERTO, ou seja, na mesma Zona que você." },
+                { name: "Palavras ao Vento", rank: 1, range: "Distante", dur: "Um turno por Nível de Poder", ing: "Funil ou uma concha marinha", desc: "Você pode aprimorar sua audição magicamente e ouvir sons específicos até a distância DISTANTE tão claramente quanto se você estivesse bem no lugar de onde eles emanam. Você precisa ver o lugar para o qual está direcionando a sua audição." },
+                { name: "Visão da Verdade", rank: 1, range: "Distante", dur: "Uma rodada", ing: "Lupa ou lente de aumento", desc: "Você pode aprimorar sua visão para que ela seja anormalmente precisa, enxergando detalhes na distância DISTANTE como se você estivesse bem ao lado do objeto em questão. VISÃO DA VERDADE também permite que você veja no escuro, através de fumaça ou neblina, e que automaticamente veja através de qualquer disfarce ou metamorfose. Você precisa ter uma linha de visão desobstruída para qualquer coisa que deseje enxergar." },
+                { name: "Caminho da Verdade", rank: 2, range: "Pessoal", dur: "Imediata", ing: "Balança (pode ser reutilizada)", desc: "Essa magia pode te guiar para o caminho certo quando você enfrenta uma decisão difícil. Uma vez que você tenha lançado essa magia, a MdJ precisa dizer qual decisão ou escolha ela acredita ser a mais sábia." },
+                { name: "Visão Remota", rank: 2, range: "Varia", dur: "Um turno (15 minutos)", ing: "Mapa", desc: "Você pode deixar que a sua visão interior perambule por vastas distâncias, sobre oceanos e terras, montanhas e vales, e veja o que está acontecendo lá nesse momento. VISÃO REMOTA não vai ajudá-la a encontrar um lugar — você precisa saber onde ele está localizado para poder vê-lo. No Nível de Poder 1, você pode ver um lugar até a distância LONGA. No Nível de Poder 2, você pode ver algo dentro do mesmo hexágono em que você está. Além dessa distância, é preciso Nível de Poder 3. Enxergar um local no qual você nunca esteve antes aumenta o Nível de Poder em 2. Suas visões são muitas vezes fragmentadas e crípticas — a MdJ decide o que você pode ver exatamente." },
+                { name: "Visões do Passado", rank: 2, range: "Curto", dur: "Um turno (15 minutos)", ing: "Objeto daquele tempo", desc: "Você pode ver eventos que ocorreram no passado no local em que você está, mesmo que esses eventos não sejam mais lembrados por nenhuma pessoa viva. No Nível de Poder 1, você pode ver um dia de volta no tempo, no Nível de Poder 2, um ano de volta no tempo, e, no Nível de Poder 3, você pode ver centenas de anos no passado. Suas visões são muitas vezes fragmentadas e crípticas — a MdJ decide o que você pode ver exatamente." },
+                { name: "Divinação", rank: 3, range: "Perto", dur: "Um turno (15 minutos)", ing: "Bola de cristal ou vísceras de peixe", desc: "Você realiza um ritual espiritual e pode ter visões do futuro. Você faz perguntas à MdJ sobre si mesma ou a respeito de alguém presente no ritual. A MdJ responde da melhor forma que puder. A resposta precisa ser breve, e muitas vezes é ambígua e críptica. A resposta também pode vir na forma de um sinal de felicidade ou de um presságio de mau agouro. (Ritual)" },
+                { name: "Intuição", rank: 3, range: "Pessoal", dur: "Imediata", ing: "Item relacionado", desc: "Você pode perguntar uma questão breve cuja resposta seja “sim” ou “não” sobre qualquer coisa no mundo. A MdJ precisa responder “sim”, “não” ou “talvez”. Ela não pode mentir. A MdJ pode escolher “talvez” mesmo que ela saiba a resposta, caso acredite que a resposta verdadeira possa estragar o jogo. Note que verdade e falsidade não são fatos objetivos, mas algo definido por quem está fazendo a pergunta. A moral e as crenças dessa pessoa podem fazer com que algo que seja verdadeiro para ela seja falso para outro indivíduo." },
+                { name: "Telepatia", rank: 3, range: "Perto", dur: "Um turno (15 minutos)", ing: "Item pertencente à vítima", desc: "Você pode ler os pensamentos superficiais de outra pessoa por alguns minutos. Procurar por memórias profundas é mais complexo, e requer Nível de Poder 2 ou até maior, dependendo do quão recente é a memória. Você também pode usar essa magia para enviar seus próprios pensamentos para outra pessoa. Nesse caso, o alcance da magia é LONGO se você sabe onde está o alvo. Ao enviar pensamentos de dor e sofrimento, você pode causar dano em Empatia ou Astúcia igual ao Nível de Poder. Não há efeitos em monstros." }
+            ],
+            "Magia de Sangue": [
+                { name: "Andarilho do Fogo", rank: 1, range: "Pessoal", dur: "Um Quarto de Dia", ing: "Uma gota de sangue", desc: "Você pode tornar a si mesma completamente imune ao calor e ao frio (veja a página 111). Você fica imune a dano por fogo também." },
+                { name: "Esquentar o Sangue", rank: 1, range: "Curto", dur: "Um turno (15 minutos)", ing: "Um cálice de vinho", desc: "Usando essa magia, você esquenta o sangue da vítima e traz à tona emoções fortes como a luxúria, o medo e a raiva. A vítima precisa externalizar esses sentimentos de alguma forma — exatamente como depende do indivíduo e da situação. A MdJ determina os detalhes. A magia não tem efeito em combate e não pode ser usada contra monstros." },
+                { name: "Imolação", rank: 2, range: "Perto", dur: "Imediata", ing: "Tocha ou fogo descoberto", desc: "Você pode esquentar o sangue de sua vítima ao ponto de ele literalmente entrar em combustão. A magia inflige dano em Força igual ao Nível de Poder e continua causando um ponto de dano por rodada até que a vítima apague o fogo com uma rolagem bem-sucedida de MOVIMENTAÇÃO (ação lenta). Armadura não protege contra essa magia." },
+                { name: "Vincular Demônio", rank: 2, range: "Curto", dur: "Um Quarto de Dia", ing: "Pentagrama", desc: "Essa magia permite que você dobre criaturas demoníacas sob sua vontade. O demônio pode resistir à magia com uma rolagem bem-sucedida de DISCERNIMENTO, usando um modificador negativo igual ao Nível de Poder. Tenha em mente que demônios raramente reagem bem às tentativas de conjuradores para VINCULÁ-LOS, então esteja pronta para qualquer consequência." },
+                { name: "Vínculo de Sangue", rank: 2, range: "Ao Alcance das Mãos", dur: "Imediata", ing: "Sangue, seu ou do alvo", desc: "Você pode transferir sangue, bem como a energia inerente a ele, para/de outra criatura da mesma ascendência que a sua. Você pode transferir um número de pontos de atributo (qualquer atributo) para/do alvo igual ao Nível de Poder. O nível máximo do atributo não pode ser ultrapassado. Pontos de atributo perdidos dessa forma podem ser recuperados normalmente. Uma vítima indisposta pode fazer uma rolagem de DISCERNIMENTO, com uma modificação negativa igual ao Nível de Poder, para resistir à magia. A magia pode ser usada para fazer uma pessoa Acabada ficar de pé, mas não tem efeito sobre ferimentos graves." },
+                { name: "Canalizar o Sangue", rank: 3, range: "Pessoal", dur: "Uma rodada", ing: "Uma vítima viva", desc: "Essa magia concentra a energia do sangue do próprio feiticeiro. Você ganha um número de Pontos de Força de Vontade igual a duas vezes o Nível de Poder. No entanto, o efeito é temporário. Seus Pontos de Força de Vontade recém-recebidos precisam ser usados na próxima rodada, ou então serão perdidos. Se você usar um sacrifício vivo como ingrediente para a magia, ele precisa ser sacrificado antes de lançar a magia. Um animal pequeno é o bastante." },
+                { name: "Maldição do Sangue", rank: 3, range: "Ilimitado", dur: "Um Quarto de Dia por Nível de Poder", ing: "Cabelo ou outra parte do corpo da vítima", desc: "Você coloca uma maldição do sangue sobre sua vítima, que precisa ser humanoide e estar viva. Você precisa saber o nome da vítima e saber onde ela se encontra, pelo menos aproximadamente. A vítima sofre dano em um atributo à sua escolha. A quantidade de dano é igual ao Nível de Poder, e a vítima recebe um ponto de dano a cada Quarto de Dia até que o efeito completo seja atingido. (Ritual)" },
+                { name: "Vincular a Alma", rank: 3, range: "Ao Alcance das Mãos", dur: "Variada", ing: "Faca de sacrifício", desc: "Através desse ritual, você pode extrair a alma de uma vítima por meio de seu sangue e prendê-la em um recipiente de algum tipo (pode ser um espelho, uma joia ou uma arma). A vítima precisa fazer uma rolagem de DISCERNIMENTO com um modificador negativo igual ao Nível de Poder. Se a rolagem fracassar, a vítima é vinculada ao recipiente por um Quarto de Dia. Fazer com que o efeito dure por um dia inteiro requer Nível de Poder 2 ou mais e, se você quer que a vítima permaneça no recipiente para sempre — ou pelo tempo que você escolher — é necessário Nível de Poder 3. Você pode especificar as condições que precisam ser cumpridas para que a alma se liberte. A vítima pode ser libertada por um DISSIPAR MAGIA. Enquanto a alma estiver vinculada, o corpo fica inconsciente e pode ser morto com um GOLPE DE MISERICÓRDIA ou possuído por outro espírito desencarnado. (Ritual)" }
+            ],
+            "Magia da Morte": [
+                { name: "Apodrecer", rank: 1, range: "Perto", dur: "Imediata", ing: "Comida podre", desc: "Você pode fazer com que a morte e a decadência se espalhem pela comida. Você pode APODRECER uma unidade de COMIDA por Nível de Poder, deixando-a inadequada para o consumo. A COMIDA torna-se um veneno com Potência igual ao Nível de Poder multiplicado por 3." },
+                { name: "Arrepio do Túmulo", rank: 1, range: "Ao Alcance das Mãos", dur: "Uma rodada por Nível de Poder", ing: "Um pedaço de cristal", desc: "Você faz com que o frio implacável da morte se espalhe por sua vítima. A vítima fica HIPOTÉRMICA, sofrendo imediatamente 1 ponto de dano tanto em Força quanto em Astúcia como resultado. A vítima continua a sofrer 1 ponto de dano nesses atributos a cada rodada, até que o dano total (de cada atributo) seja igual ao Nível de Poder. A magia não tem efeitos em monstros." },
+                { name: "Contaminar", rank: 1, range: "Ao Alcance das Mãos", dur: "Imediata", ing: "Animal doente", desc: "Você pode criar um contágio horrendo para atormentar seus inimigos. A sua vítima, que precisa ser humanoide e estar viva, contrai uma doença com Virulência igual ao Nível de Poder multiplicado por 3. Sinta-se livre para descrever os detalhes do contágio." },
+                { name: "Olhar de Carniçal", rank: 1, range: "Curto", dur: "Imediata", ing: "Capuz", desc: "A sua aparência lúgubre incita desconforto e medo em sua vítima. Ela sofre dano em Empatia igual ao Nível de Poder. Essa magia pode ser usada apenas contra humanoides vivos." },
+                { name: "Erguer os Mortos", rank: 2, range: "Perto", dur: "Um Quarto de Dia", ing: "Pertence do morto", desc: "A principal tarefa da Magia da Morte é despertar os mortos. Em sua forma mais simples, esse ritual é usado para reanimar um humanoide ou animal morto, que se tornará um morto-vivo de categoria 1. Para cada Nível de Poder além do primeiro, você pode reanimar mais um morto-vivo ou aumentar a categoria de todos os mortos-vivos erguidos pela magia em um. Um ritual com Nível de Poder 2 pode erguer dois mortos-vivos de categoria 1, já o Nível de Poder 3 pode erguer dois mortos-vivos de categoria 2 e assim por diante. Um morto-vivo de categoria 1 tem pouca ou nenhuma capacidade mental, mas consegue obedecer a comandos simples e pode usar armas e ferramentas simples. O morto-vivo tem a mesma Força que tinha em vida, mas sua Agilidade é diminuída em 1 (não podendo ficar menor do que 1) e ele não possui Astúcia nem Empatia. Perícias baseadas em Força e Agilidade são mantidas. Um morto-vivo de categoria 2 pode ser melhorado (FORTE, ESPERTO ou DURÁVEL). Um morto-vivo de categoria 3 recebe dois efeitos, etc. ERGUER OS MORTOS também pode ser usado para tomar o controle de um “morto inquieto”. (Ritual)" },
+                { name: "Falar com os Mortos", rank: 2, range: "Perto", dur: "Um turno (15 minutos)", ing: "Parte do corpo da pessoa morta", desc: "Você pode falar com os mortos. Você precisa estar dentro do alcance PERTO de onde a vítima está enterrada ou do local de sua morte. Você precisa saber o nome da vítima. Você pode falar com o morto por alguns minutos e fazer perguntas simples. A MdJ decide o que o morto pode e vai responder — lembre-se de que os mortos não são sempre cooperativos. Se os restos do corpo da vítima estiverem razoavelmente intactos, você pode falar diretamente com o cadáver; se não for o caso, você escuta o morto como uma voz fantasmagórica direto em sua mente. Essa magia não pode ser usada em mortos-vivos." },
+                { name: "Mão da Perdição", rank: 2, range: "Perto", dur: "Imediata", ing: "Mão decepada", desc: "Você pode rasgar um caminho mágico até o coração de sua vítima e apertar o órgão até que a pessoa morra. Essa magia causa dano em Força igual ao Nível de Poder. Você pode aumentar o alcance para CURTO caso gaste um Ponto de Força de Vontade extra (que não conta para o Nível de Poder da magia). Essa magia só pode ser utilizada contra humanoides vivos." },
+                { name: "O Peso das Eras", rank: 3, range: "Ao Alcance das Mãos", dur: "Imediata", ing: "Escalpo com cabelo branco", desc: "Você pode acelerar o processo de envelhecimento de uma criatura viva. A vítima envelhece imediatamente 10 anos por Nível de Poder. Se a vítima envelhecer até mudar sua categoria de idade, ela perde permanentemente um ponto de atributo à sua escolha. Se a vítima envelhecer duas vezes a idade máxima para um Adulto (por exemplo, 100 anos para um humano), ela murcha e morre. Essa magia não tem efeitos em elfos e monstros." },
+                { name: "Roubar Vida", rank: 3, range: "Perto", dur: "Imediata", ing: "Um animal vivo", desc: "Você pode sugar a vida de plantas e animais ao seu redor. Você ganha um número de Pontos de Força de Vontade igual a duas vezes o Nível de Poder. O ritual só pode ser usado em ambientes onde há vegetação, então não pode ser usado dentro de edificações ou em uma montanha rochosa. Quando você realiza o ritual, todos os animais e plantas dentro da distância PERTO — na mesma Zona que você — morrem. Isso também se aplica a humanos e outras ascendências. (Ritual)" },
+                { name: "Terror", rank: 3, range: "Curto", dur: "Imediata", ing: "Crânio", desc: "Você pode incitar um medo horrendo e insuportável em sua vítima, cuja mente é inundada por imagens sobre seu próprio envelhecimento e morte. A vítima recebe dano tanto em Astúcia quanto em Empatia igual ao Nível de Poder. Essa magia só funciona em humanoides vivos." }
+            ],
+            "Canção da Pedra": [
+                { name: "Atordoar", rank: 1, range: "Curto", dur: "Imediata", ing: "Chifre", desc: "A sua voz poderosa é tão potente que as pessoas ao seu redor ficam atordoadas. Sua canção causa 1 ponto de dano em Agilidade por Nível de Poder. Você pode distribuir o dano entre quantos oponentes você quiser. Os alvos podem tentar resistir ao efeito com uma rolagem de DISCERNIMENTO — cada X rolado nega 1 ponto de dano. Não há efeitos contra monstros." },
+                { name: "Pó das Profundezas", rank: 1, range: "Perto", dur: "Uma rodada", ing: "Um punhado de areia", desc: "Essa magia levanta uma densa nuvem de poeira de pedra do chão para cobrir a Zona em que você está. A poeira bloqueia a visão dentro e através da Zona, permitindo que você fuja do combate sem rolar MOVIMENTAÇÃO. Essa magia só pode ser utilizada quando em terreno do tipo MONTANHA ou dentro de uma CAVERNA." },
+                { name: "Voz da Montanha", rank: 1, range: "Varia", dur: "Um Quarto de Dia", ing: "Flauta", desc: "Você pode falar com a montanha e ouvir suas palavras. A montanha pode responder perguntas simples sobre o que ocorreu ali no passado (eventos ocorridos no dia anterior requerem Nível de Poder 1, eventos do ano anterior requerem Nível de Poder 2 e ainda mais longe no passado requer Nível de Poder 3) ou sobre o que está ocorrendo na área no momento (alcance CURTO requer Nível de Poder 1, alcance LONGO requer Nível de Poder 2, qualquer coisa dentro do hexágono do mapa requer Nível de Poder 3). Infelizmente, a montanha fala muito devagar e, portanto, a magia funciona como um ritual. Essa magia só pode ser utilizada quando em terreno do tipo MONTANHA ou dentro de uma CAVERNA. (Ritual)" },
+                { name: "Forjador da Pedra", rank: 2, range: "Varia", dur: "Imediata", ing: "Lira", desc: "Sua canção pode mudar a forma da pedra de acordo com a sua vontade. Essa magia permite que você crie uma parede, construa uma ponte ou erga uma escadaria do chão. Você só pode criar construções rudes. O Nível de Poder 1 invocará uma construção na mesma Zona em que você está. A cada Nível de Poder além, você pode criar algo que se estenda por uma ou mais Zonas adjacentes. Por exemplo, Nível de Poder 4 permite que você invoque uma construção que atravessa quatro Zonas. (Ritual)" },
+                { name: "Ruir", rank: 2, range: "Perto", dur: "Imediata", ing: "Harpa", desc: "Sua canção pode ruir a pedra, permitindo que você quebre muros e fortificações dentro da distância PERTO. A espessura da barreira determina o Nível de Poder requerido — a cada meio metro é necessário um Nível de Poder." },
+                { name: "Tempestade de Rochas", rank: 2, range: "Curto", dur: "Imediata", ing: "Seixos", desc: "A sua canção pode mover as rochas tão rápido que você é capaz de lançar pedras e rochas em um inimigo durante o combate. O dano (em Força) de seu ataque é igual ao Nível de Poder. Armadura funciona normalmente. Essa magia só pode ser utilizada onde houver pedras soltas que você possa lançar." },
+                { name: "Canção do Ferro", rank: 3, range: "Varia", dur: "Imediata", ing: "Martelo", desc: "A sua voz não afeta apenas pedra, mas também metais que foram minerados da montanha. Esse ritual permite que você crie armas e outros itens de metal, mas também permite que, por exemplo, você dobre barras de ferro de uma prisão ou abra algemas de ferro. Você pode criar todas as armas de metal da tabela de armas com um bônus de equipamento igual ao Nível de Poder, até um máximo de +3. As outras características e estatísticas da arma ficam de acordo com a tabela de armas. Quando você usa CANÇÃO DO FERRO, você precisa ter acesso ao tipo de matéria-prima correta, como se você fosse usar ARTESANATO para criar o objeto. (Ritual)" },
+                { name: "Invocar Golem", rank: 3, range: "Perto", dur: "Um Quarto de Dia", ing: "Figura de pedra", desc: "A sua canção pode invocar criaturas da própria rocha para servir você. Esse golem obedece às suas ordens durante o Quarto de Dia atual e depois se torna uma estátua inanimada. O golem só consegue realizar tarefas básicas e precisa ficar dentro do seu campo de visão. As estatísticas do golem dependem do Nível de Poder. Com Nível de Poder 1, você invoca uma criatura pequena com Força 2, Agilidade 1 e uma pele de pedra com Valor de Armadura 3. A cada aumento de Nível de Poder, a Força e o Valor de Armadura são aumentados igualmente em 1. Você também pode usar o Nível de Poder para criar mais golens ao mesmo tempo — a cada aumento de Nível de Poder, você invoca um golem adicional. Essa magia só pode ser utilizada quando em terreno do tipo MONTANHA ou dentro de uma CAVERNA." },
+                { name: "Terremoto", rank: 3, range: "Curto", dur: "Imediata", ing: "Tambor", desc: "Sua canção é carregada com tanto poder que você faz o próprio chão tremer e rasgar. Você pode usar a magia para derrubar paredes e fortificações ou para causar dano em uma vítima. O dano causado (em Força) é igual ao Nível de Poder." }
+            ],
+            "Simbolismo": [
+                { name: "Amedrontar", rank: 1, range: "Curto", dur: "Imediata", ing: "-", desc: "O símbolo desperta um medo profundo na vítima, que sofre dano em Astúcia igual ao Nível de Poder. Não há efeitos em monstros." },
+                { name: "Incitar", rank: 1, range: "Curto", dur: "Imediata", ing: "-", desc: "O símbolo atrai a vítima, que precisa fazer uma rolagem de DISCERNIMENTO com um modificador negativo igual ao Nível de Poder. Se a rolagem falhar, a vítima precisa CORRER para a distância AO ALCANCE DAS MÃOS do símbolo, gastando todas as suas ações normais para fazê-lo (ações bônus provindas de talentos podem ser usadas normalmente). Quando a vítima alcança o símbolo, ou caso o símbolo seja movido, o efeito é quebrado. Não há efeitos em monstros." },
+                { name: "Paralisar", rank: 1, range: "Curto", dur: "Imediata", ing: "-", desc: "O poder hipnotizante do símbolo deixa seu oponente mesmerizado. Com Nível de Poder 1, a vítima perde a sua ação rápida na mesma rodada, ou na próxima, caso já a tenha usado. No Nível de Poder 2, ela perde a ação lenta. No Nível de Poder 3, ela perde ambas as ações e, no Nível de Poder 4, ela também perde ações bônus provindas de talentos. Essa magia não tem efeitos sobre monstros." },
+                { name: "Cegar", rank: 2, range: "Curto", dur: "Um Quarto de Dia", ing: "-", desc: "A vítima precisa fazer uma rolagem de DISCERNIMENTO com um modificador negativo igual ao Nível de Poder. Se a rolagem falhar, o símbolo cega a vítima. O efeito dessa cegueira é o mesmo que estar em escuridão total. Em vítimas sem Astúcia, como animais, o efeito é automático, mas a magia não tem efeitos em monstros." },
+                { name: "Ilusão", rank: 2, range: "Curto", dur: "Um turno (15 minutos)", ing: "-", desc: "Você faz a vítima enxergar ou ouvir algo que não está lá, ou então esconde algo que poderia ser visto. Um item pequeno requer Nível de Poder 1, enquanto um objeto de tamanho humanoide requer Nível de Poder 2 e uma ilusão do tamanho de uma casa requer Nível de Poder 3. Apenas uma pessoa é afetada. A vítima pode ver através da ilusão com uma rolagem bem-sucedida de DISCERNIMENTO, mas recebe uma penalidade igual ao Nível de Poder. Essa magia não tem efeitos sobre monstros." },
+                { name: "Truque da Mente", rank: 2, range: "Curto", dur: "Uma rodada", ing: "-", desc: "Você pode forçar um PNJ a deter uma ação que, de outra forma, ele teria feito. Precisa ser uma ação pequena, algo que ele poderia esquecer sendo distraído. Um exemplo é fazer um guarda deixar uma PJ passar sem confirmar quem ela é, ou então fazer alguém esquecer suas chaves sobre a mesa. A magia não pode ser usada em combate. (Palavra de Poder)" },
+                { name: "Portal", rank: 3, range: "Perto", dur: "Um Quarto de Dia por Nível de Poder", ing: "-", desc: "Esse poderoso ritual faz um rasgo no véu entre os mundos e abre um caminho entre eles. Esse é um feito muito arriscado, já que você corre o risco de encontrar todo tipo de demônios e outras criaturas maléficas do outro lado — talvez você possa usá-los para seus objetivos, mas é igualmente provável que eles tentem usar você para os deles. A magia VINCULAR DEMÔNIO é muito útil nessa situação. Outro uso para essa magia é criar um PORTAL do outro lado, que pode te levar para qualquer lugar que você desejar nas Terras Proibidas. (Ritual)" },
+                { name: "Runa do Poder", rank: 3, range: "Ao Alcance das Mãos", dur: "Imediata", ing: "-", desc: "Você pode carregar um símbolo com poder. O símbolo precisa ser desenhado ou gravado em um objeto, que então é carregado com um número de Pontos de Força de Vontade. Mais tarde, você pode usar o símbolo para lançar magias, esvaziando os Pontos de Força de Vontade armazenados. Você não precisa VINCULAR MAGIA para usar essa magia. Outros conjuradores hábeis na arte das runas podem usar as suas RUNAS DO PODER caso tenham acesso a elas, então mantenha-as sempre com você! (Ritual)" },
+                { name: "Titereiro", rank: 3, range: "Perto", dur: "Uma rodada", ing: "-", desc: "Você pode tomar completamente o controle das ações de sua vítima. A vítima precisa fazer uma rolagem de DISCERNIMENTO com um modificador negativo igual ao Nível de Poder. Se a rolagem fracassar, a vítima se torna uma marionete sem controle do próprio corpo. Esse controle dura apenas até a próxima vez que a vítima for agir na ordem da iniciativa, e cobre apenas o uso de uma ação rápida e uma ação lenta. A vítima não pode realizar ações reativas e nem ações bônus provenientes de talentos antes que as ações de TITEREIRO sejam realizadas. A magia não tem efeitos sobre monstros." }
+            ]
+        },
+
+        generalList: [
+            "Alfaiate", "Ambidestria", "Ameaçador", "Andarilho", "Aquartelador", 
+            "Arremessador", "Arrombador", "Artífice de Arcos", "Atirador Preciso", "Atirador Veloz",
+            "Berserker", "Carrasco", "Construtor", "Cozinheiro", "Curtidor", 
+            "Defensor", "Desbravador", "Destemido", "Empacotador", "Empunhadura Firme", 
+            "Envenenador", "Ferreiro", "Herbalista", "Incorruptível", "Investida", 
+            "Língua Afiada", "Lutador", "Marinheiro", "Mestre da Caçada", "Mestre da Montaria", 
+            "Mestre em Escudos", "Mestre em Espadas", "Mestre em Facas", "Mestre em Lanças", 
+            "Mestre em Machados", "Mestre em Martelos", "Pés Firmes", "Pés Ligeiros", 
+            "Pescador", "Rápido como um Raio", "Resistente a Dor", "Ruína dos Dragões", 
+            "Sangue Frio", "Saque Rápido", "Sexto Sentido", "Sortudo"
+        ]
+    };
+
+    // Estado Global
+    const defaultState = { kin: null, profession: null, activeTalents: [] };
+    let state = JSON.parse(JSON.stringify(defaultState));
+
+    // DOM Elements
+    const kinSelect = document.getElementById('kin-select');
+    const profSelect = document.getElementById('profession-select');
+    const cardsContainer = document.getElementById('cards-container');
+    const poolList = document.getElementById('pool-list');
+    const searchInput = document.getElementById('search-talents');
+    const magicTabBtn = document.getElementById('tab-btn-magic');
+    const grimoireContainer = document.getElementById('grimoire-container');
+    const setupControls = document.querySelector('.setup-panel .controls');
+    const ruleHints = {
+        talent: document.getElementById('rule-hint-talent'),
+        magic: document.getElementById('rule-hint-magic')
+    };
+    const tabs = {
+        talents: document.getElementById('tab-talents'),
+        magic: document.getElementById('tab-magic')
+    };
+    const navButtons = {
+        talents: document.getElementById('tab-btn-talents'),
+        magic: document.getElementById('tab-btn-magic')
+    };
+
+    function init() {
+        Object.keys(db.kins).forEach(k => {
+            const opt = document.createElement('option');
+            opt.value = k; opt.textContent = k;
+            kinSelect.appendChild(opt);
+        });
+        Object.keys(db.professions).forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p; opt.textContent = p;
+            profSelect.appendChild(opt);
+        });
+
+        loadData();
+        
+        kinSelect.addEventListener('change', handleKinChange);
+        profSelect.addEventListener('change', handleProfChange);
+        searchInput.addEventListener('input', renderGeneralPool);
+    }
+
+    // --- Lógica de Persistência ---
+    function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        checkMagicAccess();
+        renderGrimoire();
+    }
+
+    function loadData() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            try {
+                state = JSON.parse(saved);
+                if(state.kin) kinSelect.value = state.kin;
+                if(state.profession) profSelect.value = state.profession;
+            } catch (e) { console.error(e); }
+        }
+        checkMagicAccess();
+        renderDeck();
+        renderGeneralPool();
+        renderGrimoire();
+    }
+
+    function resetSheet() {
+        if(confirm("Tem certeza que deseja apagar toda a ficha?")) {
+            localStorage.removeItem(STORAGE_KEY);
+            state = JSON.parse(JSON.stringify(defaultState));
+            kinSelect.value = "";
+            profSelect.value = "";
+            location.reload();
+        }
+    }
+
+    // --- Lógica de Abas e Magia ---
+    function checkMagicAccess() {
+        const isCaster = ["Druida", "Feiticeiro"].includes(state.profession);
+        const hasMagicTalent = state.activeTalents.some(t => {
+            const data = db.professionTalents[t.name];
+            return data && data.isMagic;
+        });
+
+        if (isCaster || hasMagicTalent) {
+            magicTabBtn.classList.remove('hidden');
+        } else {
+            magicTabBtn.classList.add('hidden');
+            if (!tabs.magic.classList.contains('hidden') && tabs.magic.style.display !== 'none') switchTab('talents');
+        }
+    }
+
+    window.switchTab = function(tabName) {
+        // Reset visual states
+        navButtons.talents.classList.remove('active');
+        navButtons.magic.classList.remove('active');
+        tabs.talents.classList.remove('active');
+        tabs.magic.classList.remove('active');
+        ruleHints.talent.classList.remove('active');
+        ruleHints.magic.classList.remove('active');
+
+        if(tabName === 'talents') {
+            navButtons.talents.classList.add('active');
+            tabs.talents.classList.add('active');
+            ruleHints.talent.classList.add('active');
+            setupControls.classList.remove('hidden');
+        } else {
+            navButtons.magic.classList.add('active');
+            tabs.magic.classList.add('active');
+            ruleHints.magic.classList.add('active');
+            setupControls.classList.add('hidden');
+            renderGrimoire();
+        }
+    }
+
+    // --- Manipuladores de Eventos ---
+    function handleKinChange(e) {
+        const newKin = e.target.value;
+        state.activeTalents = state.activeTalents.filter(t => t.type !== 'Ascendência');
+        state.kin = newKin;
+
+        if (newKin && db.kins[newKin]) {
+            const data = db.kins[newKin];
+            addTalent({ name: data.name, type: 'Ascendência', ranks: data.ranks, currentRank: 1, locked: true });
+        }
+        saveData(); renderDeck();
+    }
+
+    function handleProfChange(e) {
+        const newProf = e.target.value;
+        state.activeTalents = state.activeTalents.filter(t => t.type !== 'Profissão');
+        state.profession = newProf;
+
+        if (newProf && db.professions[newProf]) {
+            db.professions[newProf].forEach(pathName => {
+                const talentData = db.professionTalents[pathName] || db.professionTalents["default"];
+                addTalent({ name: pathName, type: 'Profissão', ranks: talentData.ranks, currentRank: 1, locked: false });
+            });
+        }
+        saveData(); renderDeck();
+    }
+
+    function addTalent(talentObj) {
+        if (!state.activeTalents.find(t => t.name === talentObj.name)) {
+            state.activeTalents.push(talentObj);
+            saveData();
+        }
+    }
+
+    function removeTalent(name) {
+        state.activeTalents = state.activeTalents.filter(t => t.name !== name);
+        saveData();
+        renderDeck();
+        renderGeneralPool();
+    }
+
+    function toggleGeneralTalent(name) {
+        const exists = state.activeTalents.find(t => t.name === name);
+        if (exists) { removeTalent(name); } 
+        else {
+            const data = db.generalTalentsData[name] || db.generalTalentsData["default"];
+            addTalent({ name: name, type: 'Geral', ranks: data.ranks, currentRank: 1, locked: false });
+            saveData(); renderDeck(); renderGeneralPool();
+        }
+    }
+
+    function updateRank(name, rank) {
+        const talent = state.activeTalents.find(t => t.name === name);
+        if (talent) { talent.currentRank = rank; saveData(); renderDeck(); }
+    }
+
+    // --- Renderização ---
+    function renderDeck() {
+        cardsContainer.innerHTML = '';
+        if (state.activeTalents.length === 0) {
+            cardsContainer.innerHTML = '<div class="empty-state">Selecione sua Ascendência e Profissão acima para revelar seus talentos.</div>';
+            return;
+        }
+
+        const sorted = state.activeTalents.sort((a, b) => {
+            const order = { 'Ascendência': 1, 'Profissão': 2, 'Geral': 3 };
+            return order[a.type] - order[b.type];
+        });
+
+        sorted.forEach(talent => {
+            const card = document.createElement('article');
+            card.className = 'talent-card';
+            
+            let bodyHtml = '';
+            if (talent.type === 'Ascendência') {
+                 bodyHtml += `<div class="rank-desc active">${talent.ranks[1]}</div>`;
+            } else {
+                [1, 2, 3].forEach(r => {
+                    const statusClass = r <= talent.currentRank ? 'active' : 'inactive';
+                    bodyHtml += `<div class="rank-desc ${statusClass}"><strong>CATEGORIA ${r}</strong>${talent.ranks[r]}</div>`;
+                });
+            }
+
+            const removeBtn = talent.locked ? '' : `<button class="remove-btn" onclick="removeTalent('${talent.name}')">Remover</button>`;
+            let rankControls = '';
+            if (talent.type !== 'Ascendência') {
+                rankControls = `<div class="rank-tracker"><span>Nível:</span><div class="rank-dots">
+                    <div class="rank-dot ${talent.currentRank >= 1 ? 'active' : ''}" onclick="updateRank('${talent.name}', 1)">1</div>
+                    <div class="rank-dot ${talent.currentRank >= 2 ? 'active' : ''}" onclick="updateRank('${talent.name}', 2)">2</div>
+                    <div class="rank-dot ${talent.currentRank >= 3 ? 'active' : ''}" onclick="updateRank('${talent.name}', 3)">3</div>
+                </div></div>`;
+            }
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <h3>${talent.name}</h3>
+                    <span class="type-badge">${talent.type}</span>
+                </div>
+                <div class="card-body">${bodyHtml}</div>
+                <div class="card-footer">${rankControls}${removeBtn}</div>
+            `;
+            cardsContainer.appendChild(card);
+        });
+    }
+
+    function renderGeneralPool() {
+        const searchTerm = searchInput.value.toLowerCase();
+        poolList.innerHTML = '';
+        db.generalList.forEach(tName => {
+            if (!tName.toLowerCase().includes(searchTerm)) return;
+            const isAdded = state.activeTalents.find(t => t.name === tName);
+            const div = document.createElement('div');
+            div.className = `pool-item ${isAdded ? 'added' : ''}`;
+            div.innerHTML = `<span>${tName}</span> <span class="plus-icon">${isAdded ? '✓' : '+'}</span>`;
+            if (!isAdded) div.addEventListener('click', () => toggleGeneralTalent(tName));
+            poolList.appendChild(div);
+        });
+    }
+
+    function renderGrimoire() {
+        grimoireContainer.innerHTML = '';
+        
+        // 1. Magias Gerais (Sempre disponíveis para conjuradores)
+        renderSpellDiscipline("Magias Gerais", db.spells["Gerais"], 99); // 99 = sempre seguro
+
+        // 2. Magias por Talento
+        state.activeTalents.forEach(talent => {
+            const talentInfo = db.professionTalents[talent.name];
+            if (talentInfo && talentInfo.isMagic) {
+                const spells = db.spells[talentInfo.discipline];
+                if (spells) {
+                    renderSpellDiscipline(talentInfo.discipline, spells, talent.currentRank);
+                }
+            }
+        });
+
+        if (grimoireContainer.innerHTML === '') {
+            grimoireContainer.innerHTML = '<div class="empty-state">Você ainda não conhece nenhuma magia. Adquira talentos de Druida ou Feiticeiro.</div>';
+        }
+    }
+
+    function renderSpellDiscipline(title, spells, casterRank) {
+        if(!spells) return;
+        
+        const header = document.createElement('h3');
+        header.className = 'discipline-header';
+        header.innerText = title;
+        grimoireContainer.appendChild(header);
+
+        spells.forEach(spell => {
+            const isSafe = spell.rank <= casterRank;
+            const statusClass = isSafe ? 'safe' : 'risky';
+            const statusText = isSafe ? 'Segura' : 'Arriscada (Infortúnio)';
+            const statusBadgeClass = isSafe ? 'status-safe' : 'status-risky';
+
+            const card = document.createElement('article');
+            card.className = `spell-card ${statusClass}`;
+            card.innerHTML = `
+                <div class="card-header">
+                    <h3>${spell.name}</h3>
+                    <span class="spell-status ${statusBadgeClass}">${statusText}</span>
+                </div>
+                <div class="spell-meta">
+                    <span>Nível: <b>${spell.rank}</b></span>
+                    <span>Alcance: <b>${spell.range}</b></span>
+                    <span>Duração: <b>${spell.dur}</b></span>
+                    ${spell.ing ? `<span>Ingrediente: <b>${spell.ing}</b></span>` : ''}
+                </div>
+                <div class="card-body">
+                    <p>${spell.desc}</p>
+                </div>
+            `;
+            grimoireContainer.appendChild(card);
+        });
+    }
+
+    // Globais
+    window.removeTalent = removeTalent;
+    window.updateRank = updateRank;
+    window.resetSheet = resetSheet;
+    window.switchTab = switchTab;
+
+    init();
+</script>
+</body>
+</html>
