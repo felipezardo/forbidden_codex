@@ -59,26 +59,17 @@
             position: relative;
         }
         header h1 {
-            margin: 0 0 5px 0;
-            line-height: 1;
+            font-family: var(--font-title);
+            color: var(--color-primary);
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
         }
-        
-        /* ESTILO RESPONSIVO DO LOGO */
-        header h1 img {
-            max-width: 100%;      /* Garante que não estoure a tela no mobile */
-            height: auto;         /* Mantém proporção */
-            max-height: 80px;     /* Limita altura para não ocupar a tela toda (similar a 2 linhas de texto) */
-            width: auto;          /* Permite encolher se necessário */
-            display: inline-block;
-            object-fit: contain;
+        .logo img {
+            max-width: 250px;
+            height: auto;
         }
-        
-        @media (max-width: 600px) {
-             header h1 img {
-                max-height: 60px; /* Um pouco menor em celulares */
-             }
-        }
-
         .reset-btn {
             position: absolute;
             top: 0;
@@ -121,7 +112,7 @@
         .nav-tab.active {
             background: var(--color-paper);
             color: var(--color-primary);
-            border-bottom: 3px solid var(--color-primary); 
+            border-bottom: 3px solid var(--color-primary); /* Corrigido para primary */
             margin-bottom: -2px;
             font-weight: bold;
             position: relative;
@@ -179,13 +170,10 @@
             border: 1px solid rgba(138, 28, 28, 0.2);
             text-align: center;
             max-width: 800px;
-            display: none; 
-        }
-        .rules-hint.active {
-            display: block !important;
         }
 
-        /* --- LAYOUT DE CONTEÚDO --- */
+        /* --- LAYOUT DE CONTEÚDO E VISIBILIDADE --- */
+        /* IMPORTANTE: !important aqui garante que o elemento suma mesmo que tenha display:grid definido em outra classe */
         .view-section {
             display: none !important; 
             width: 100%;
@@ -193,17 +181,26 @@
 
         /* Quando a aba de talentos está ativa */
         #tab-talents.active {
-            display: grid !important;
+            display: grid !important; /* Força o grid */
             grid-template-columns: 1fr;
             gap: var(--spacing-lg);
         }
         
         /* Quando a aba de magias está ativa */
         #tab-magic.active {
-            display: block !important;
+            display: block !important; /* Força o block */
             animation: fadeIn 0.3s ease-in-out;
         }
         
+        /* Garante que as dicas também sigam a regra de visibilidade */
+        .rules-hint {
+             display: none !important;
+        }
+        .rules-hint.active {
+            display: block !important;
+        }
+        
+        /* Utilitário para esconder controles */
         .hidden { display: none !important; }
 
         @media (min-width: 900px) {
@@ -434,9 +431,13 @@
 
 <div class="app-container">
     <header>
-        <h1><img src="./logo.png" alt="Logo forbidden-lands"></h1>
+        <h1 class="logo"><img src="./logo.png" alt="Forbidden Codex"></h1>
         
-        <button class="reset-btn" onclick="resetSheet()">Limpar</button>
+        <button class="reset-btn" onclick="resetSheet()" title="Limpar Ficha">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+    </svg>
+</button>
     </header>
 
     <nav class="nav-tabs">
@@ -752,6 +753,339 @@
             },
             
             "default": { ranks: { 1: "Efeito da Categoria 1.", 2: "Efeito da Categoria 2.", 3: "Efeito da Categoria 3." } }
+        },
+
+        // Talentos Gerais COM DESCRIÇÕES COMPLETAS DO LIVRO
+        generalTalentsData: {
+            "Alfaiate": {
+                ranks: {
+                    1: "Você conhece a arte de transformar lã em tecido e depois fazer roupas com ele. Com um teste bem-sucedido de ARTESANATO, você pode transformar até um D6 unidades de LÃ em TECIDO. Se você falhar, a LÃ é destruída. Se você tiver acesso a uma ALFAIATARIA, você pode criar TECIDO mais rápido e sem rolar os dados. Você também pode usar ARTESANATO para costurar novas roupas de qualidade normal.",
+                    2: "Você pode fazer roupas de qualidade superior, que podem ser vendidas pelo dobro do preço. Faça sua rolagem com um modificador de -2.",
+                    3: "Você pode fazer roupas de qualidade excepcional, que podem ser vendidas por quatro vezes o preço normal. Faça sua rolagem com um modificador de -4."
+                }
+            },
+            "Ambidestria": {
+                ranks: {
+                    1: "Você é adepta da arte de lutar com uma arma corpo a corpo em cada mão. Você tem sua arma primária na mão dominante e a arma secundária na outra mão. Você pode usar sua arma secundária para realizar um ataque extra por rodada como uma ação rápida. Ela precisa ser uma arma LEVE, e o ataque é modificado em -2.",
+                    2: "O mesmo que a categoria 1, mas você pode usar uma arma normal em sua mão secundária.",
+                    3: "O mesmo que a categoria 2, mas o seu ataque com a arma secundária não é modificado."
+                }
+            },
+            "Ameaçador": {
+                ranks: {
+                    1: "Você tem uma presença física amedrontadora e pode ameaçar as pessoas para que elas façam o que você quiser. Você pode usar POTÊNCIA em vez de MANIPULAÇÃO para ameaçar alguém e fazê-lo realizar o que você quer. Se for bem-sucedida, o seu oponente não pode exigir nada em troca para você. Ele ainda pode escolher atacá-la.",
+                    2: "O mesmo que a categoria 1, e a sua rolagem de POTÊNCIA é modificada em +1 quando você ameaça alguém.",
+                    3: "O mesmo que a categoria 2, e você pode adicionar um Dado de Artefato D8 para a sua rolagem quando ameaçar alguém."
+                }
+            },
+            "Andarilho": {
+                ranks: {
+                    1: "Você pode viajar a pé pelas áreas selvagens durante um longo tempo sem precisar parar para descansar. A sua rolagem de RESILIÊNCIA é modificada em +1 quando você faz uma MARCHA FORÇADA.",
+                    2: "A sua rolagem de RESILIÊNCIA para MARCHA FORÇADA é automaticamente bem-sucedida.",
+                    3: "CAMINHAR por um Quarto de Dia conta como DESCANSAR para você."
+                }
+            },
+            "Aquartelador": {
+                ranks: {
+                    1: "Você pode encontrar boas áreas para acampamento e pode garantir que o seu grupo fique confortável ao redor da fogueira. A sua rolagem de SOBREVIVÊNCIA é modificada em +1 quando você MONTA ACAMPAMENTO durante as jornadas.",
+                    2: "Quando você MONTOU ACAMPAMENTO, a pessoa MANTENDO VIGÍLIA recebe um bônus de +2 em PATRULHA.",
+                    3: "Você pode adicionar um Dado de Artefato D8 para a sua rolagem de MONTAR ACAMPAMENTO."
+                }
+            },
+            "Arremessador": {
+                ranks: {
+                    1: "Você consegue atingir qualquer coisa com uma pedra arremessada. Os seus ataques são modificados em +1 quando você usa uma arma de arremesso ou uma funda.",
+                    2: "Todos os seus ataques com armas de arremesso ou fundas têm um alcance de distância LONGA.",
+                    3: "Você pode adicionar um Dado de Artefato D8 para os seus ataques com armas de arremesso ou fundas."
+                }
+            },
+            "Arrombador": {
+                ranks: {
+                    1: "Você dominou a arte de arrombar fechaduras. Você precisa de algum tipo de ferramenta. A sua rolagem de ARTIMANHA é modificada em +1 quando você arromba uma fechadura.",
+                    2: "Você pode fazer uma rolagem de ARTIMANHA para se livrar de correntes ou cordas mesmo quando estiver completamente amarrada.",
+                    3: "Você pode adicionar um Dado de Artefato D8 na sua rolagem ao arrombar uma fechadura."
+                }
+            },
+            "Artífice de Arcos": {
+                ranks: {
+                    1: "Você aprendeu como transformar madeira e couro em arcos e fundas letais. Você pode usar a perícia ARTESANATO para fazer armas à distância da tabela de armas com estatísticas normais.",
+                    2: "Você pode fazer armas à distância com um Bônus de Arma que é um ponto acima do normal. Isso leva o dobro do tempo, e a sua rolagem para a fabricação é modificada em -2.",
+                    3: "Você pode fazer armas à distância com um Bônus de Arma que é dois pontos acima do normal. Isso leva quatro vezes o tempo normal, e a sua rolagem de fabricação é modificada em -4."
+                }
+            },
+            "Atirador Preciso": {
+                ranks: {
+                    1: "Você é uma arqueira mestra, e sua flecha quase sempre atinge o alvo. Seu ataque é modificado em +1 quando você ATIRA com um arco ou uma besta.",
+                    2: "Você pode ATIRAR com um arco ou uma besta nas distâncias CURTA e LONGA sem qualquer penalidade.",
+                    3: "Você pode adicionar um Dado de Artefato D8 em qualquer ataque feito com um arco ou com uma besta."
+                }
+            },
+            "Atirador Veloz": {
+                ranks: {
+                    1: "Você pode atirar com seu arco ou funda em uma velocidade incrível. Você não precisa PREPARAR ARMA antes de ATIRAR com uma arma à distância. Não é aplicado a bestas.",
+                    2: "Você pode ATIRAR com uma arma à distância e CORRER ao mesmo tempo.",
+                    3: "Você só precisa gastar uma ação rápida para ATIRAR com sua arma à distância, podendo portanto ATIRAR duas vezes a cada rodada."
+                }
+            },
+            "Berserker": {
+                ranks: {
+                    1: "Quando você fica Acabada, pode liberar uma fúria primal sobre o mundo. Na sua vez, durante a próxima rodada, você recupera uma quantidade de pontos no atributo que foi reduzido a zero que é igual à sua categoria em BERSERKER. Você precisa atacar imediatamente o oponente mais próximo em combate corpo a corpo, e precisa continuar lutando até que você esteja Acabada (novamente) ou até que todos os oponentes dentro da sua linha de visão estejam Acabados. Durante a sua fúria, você é imune a qualquer tentativa de MANIPULAÇÃO, e todos os seus ataques corpo a corpo causam um ponto a mais de dano.",
+                    2: "Igual à categoria 1, mas você recupera 2 pontos do atributo.",
+                    3: "Igual à categoria 1, mas você recupera 3 pontos do atributo."
+                }
+            },
+            "Carrasco": {
+                ranks: {
+                    1: "Você sabe onde acertar para que um oponente não se levante mais. Nunca mais. Quando você causa um ferimento grave em seu oponente, você pode rolar mais uma vez. A rolagem maior é a que conta.",
+                    2: "Como na categoria 1, mas você também pode reverter a rolagem do D66 para o ferimento grave uma rolagem de 16 se tornaria 61, por exemplo.",
+                    3: "Quando você causa um ferimento grave em seu inimigo, você pode escolher livremente o resultado que quiser na lista relevante."
+                }
+            },
+            "Construtor": {
+                ranks: {
+                    1: "Você é uma engenheira habilidosa e pode construir estruturas avançadas em sua fortaleza. Você pode construir funções avançadas em sua fortaleza.",
+                    2: "Você ganha um modificador de +1 ao construir uma função em sua fortaleza.",
+                    3: "Você pode adicionar um Dado de Artefato D8 na sua rolagem ao construir uma função em sua fortaleza."
+                }
+            },
+            "Cozinheiro": {
+                ranks: {
+                    1: "Você sabe como cozinhar usando coisas simples. Você pode transformar até D6 unidades de VEGETAIS, CARNE ou PEIXE em COMIDA em um Quarto de Dia (requer fogo).",
+                    2: "Quando você cozinha por um Quarto de Dia, você cria uma unidade extra de COMIDA.",
+                    3: "A comida que você cozinha é tão deliciosa que, seja lá quem coma, imediatamente recupera um ponto perdido de Empatia."
+                }
+            },
+            "Curtidor": {
+                ranks: {
+                    1: "Você conhece a arte de transformar peles em couro. Com uma rolagem bem-sucedida de ARTESANATO, você pode transformar até um D6 unidades de PELES em COURO. Se você falhar, as PELES são destruídas. Você também pode usar a perícia ARTESANATO para criar armaduras de couro com as estatísticas normais.",
+                    2: "Você pode fazer armaduras de couro com um Valor de Armadura que é um ponto acima do normal. Isso leva o dobro do tempo, e a sua rolagem é feita com um modificador de -2.",
+                    3: "Você pode fazer armaduras de couro com um Valor de Armadura que é dois pontos acima do normal. Isso leva quatro vezes o tempo, e a sua rolagem é feita com um modificador de -4."
+                }
+            },
+            "Defensor": {
+                ranks: {
+                    1: "Você é hábil em usar armas e escudos para se defender. Você recebe um BLOQUEAR gratuito a cada rodada de combate. O BLOQUEAR extra não conta como uma das suas ações da rodada.",
+                    2: "Você recebe um bônus de +1 sempre que BLOQUEAR.",
+                    3: "Você pode BLOQUEAR um número ilimitado de vezes durante a mesma rodada, mas apenas uma vez para cada ataque."
+                }
+            },
+            "Desbravador": {
+                ranks: {
+                    1: "Você é uma mestra em encontrar o caminho certo. A sua rolagem de SOBREVIVÊNCIA é modificada em +1 quando você DESBRAVA.",
+                    2: "Você está mais do que confortável nas terras selvagens. DESBRAVAR por um Quarto de Dia conta como DESCANSAR para você.",
+                    3: "Você pode adicionar um Dado de Artefato D8 para a sua rolagem de SOBREVIVÊNCIA quando for DESBRAVAR."
+                }
+            },
+            "Destemido": {
+                ranks: {
+                    1: "Nem mesmo os horrores que espreitam nas Terras Proibidas assustam você. Você pode fazer uma rolagem de DISCERNIMENTO como 'armadura' contra ataques de medo - cada X rolado elimina um X rolado pelo ataque de medo. A rolagem de DISCERNIMENTO não conta como uma ação.",
+                    2: "Você pode escolher que o dano de um ataque de medo diminua a sua Empatia em vez da sua Astúcia.",
+                    3: "Você é imune a ataques de medo."
+                }
+            },
+            "Empacotador": {
+                ranks: {
+                    1: "Você sabe como empacotar os seus pertences para que eles não tomem muito espaço. Você pode carregar dois itens adicionais sem ficar sobrecarregada.",
+                    2: "Você pode carregar outros três itens adicionais, somando um total de cinco itens adicionais.",
+                    3: "Você pode carregar outros cinco itens adicionais, somando um total de dez itens adicionais."
+                }
+            },
+            "Empunhadura Firme": {
+                ranks: {
+                    1: "É preciso muito esforço para tirar uma arma da sua mão. DESARMAR você requer um X extra - ou seja, dois X para armas de uma mão e três X para armas de duas mãos.",
+                    2: "DESARMAR você requer dois X extras - ou seja, três X para armas de uma mão e quatro X para armas de duas mãos.",
+                    3: "Você é imune a DESARMAR."
+                }
+            },
+            "Envenenador": {
+                ranks: {
+                    1: "Você dominou a arte de preparar venenos de todo tipo. Você pode usar a perícia ARTESANATO para criar venenos e antídotos. A Potência do veneno aumenta em um para cada X que você rola além do primeiro.",
+                    2: "Como a categoria 1, mas todas as suas rolagens para criar venenos são modificadas em +1.",
+                    3: "Como na categoria 2, mas você pode adicionar um Dado de Artefato D8 na sua rolagem quando for criar venenos."
+                }
+            },
+            "Ferreiro": {
+                ranks: {
+                    1: "Você conhece a arte de martelar o ferro. Você pode usar a perícia ARTESANATO para criar qualquer arma de combate corpo a corpo, escudo ou armadura de metal das tabelas, usando as estatísticas normais. Você também pode transformar MINÉRIO DE FERRO em FERRO em uma FORJA.",
+                    2: "Você pode fazer armas, escudos e armaduras de metal com um Bônus de Arma ou Valor de Armadura que é um ponto acima do normal. Isso leva o dobro do tempo, e a sua rolagem é modificada em -2.",
+                    3: "Você pode fazer armas, escudos e armaduras de metal com um Bônus de Arma ou Valor de Armadura que é dois pontos acima do normal. Isso leva quatro vezes o tempo necessário, e a sua rolagem é modificada em -4."
+                }
+            },
+            "Herbalista": {
+                ranks: {
+                    1: "Você sabe a diferença entre plantas comestíveis e ervas daninhas. A sua rolagem de SOBREVIVÊNCIA é modificada em +1 quando você COLETA durante uma jornada.",
+                    2: "Andar nas terras selvagens acalma você. Um Quarto de Dia gasto COLETANDO conta como DESCANSAR.",
+                    3: "A quantidade de VEGETAIS que você encontra quando estiver COLETANDO é dobrada."
+                }
+            },
+            "Incorruptível": {
+                ranks: {
+                    1: "Quando os outros tentam afetá-la, você é irredutível. A sua rolagem de DISCERNIMENTO é modificada em +1 quando alguém tenta MANIPULAR você.",
+                    2: "Você pode adicionar um Dado de Artefato D8 em suas rolagens quando alguém MANIPULA você.",
+                    3: "Você é imune a MANIPULAÇÃO."
+                }
+            },
+            "Investida": {
+                ranks: {
+                    1: "Você se joga no combate sem nenhuma preocupação com os riscos. Quando você se move da distância PERTO para AO ALCANCE DAS MÃOS, você pode, como parte da mesma ação, GOLPEAR, ESTOCAR, SOCAR ou DERRUBAR. Isso é chamado INVESTIR (ação lenta).",
+                    2: "O seu ataque é modificado em +1 quando você usa INVESTIR.",
+                    3: "Quando você usa INVESTIR, você pode adicionar um Dado de Artefato D8 na rolagem."
+                }
+            },
+            "Língua Afiada": {
+                ranks: {
+                    1: "Você é uma mestra da formulação de insultos escandalosos. Quando você MANIPULA alguém e rola mais X do que precisa para ganhar na rolagem disputada, você pode causar 1 ponto de dano na Empatia do seu oponente a cada X extra.",
+                    2: "A sua rolagem de MANIPULAÇÃO é modificada em +1 caso você insulte o seu oponente.",
+                    3: "Você pode adicionar um Dado de Artefato D8 para rolagens de MANIPULAÇÃO caso você insulte o seu oponente de alguma maneira."
+                }
+            },
+            "Lutador": {
+                ranks: {
+                    1: "Você não precisa de armas para atingir os seus inimigos. Todos os seus ataques desarmados são modificados em +1.",
+                    2: "Você pode dar uma cabeçada no seu inimigo. Isso conta como um ataque desarmado normal, mas é uma ação rápida.",
+                    3: "Você pode adicionar um Dado de Artefato D8 para todos os seus ataques desarmados."
+                }
+            },
+            "Marinheiro": {
+                ranks: {
+                    1: "Você sabe como manobrar jangadas e barcos em águas desconhecidas. A sua rolagem de SOBREVIVÊNCIA é modificada em +1 quando você DESBRAVA no mar.",
+                    2: "A vida no mar tranquiliza você. Um Quarto de Dia DESBRAVANDO em um barco conta como DESCANSAR.",
+                    3: "Você pode adicionar um Dado de Artefato D8 para a sua rolagem de SOBREVIVÊNCIA quando você DESBRAVAR no mar."
+                }
+            },
+            "Mestre da Caçada": {
+                ranks: {
+                    1: "Você é uma caçadora habilidosa. A sua rolagem de SOBREVIVÊNCIA é modificada em +1 quando você CAÇA durante jornadas.",
+                    2: "Caçar tranquiliza você. Um Quarto de Dia gasto CAÇANDO conta como DESCANSAR.",
+                    3: "Ao CAÇAR, você pode rolar dois D6s na tabela de animais e escolher qual resultado quer usar."
+                }
+            },
+            "Mestre da Montaria": {
+                ranks: {
+                    1: "Você é treinada na arte da luta montada. Você pode atirar com um arco curto ou uma funda enquanto estiver montada.",
+                    2: "Você recebe +1 de bônus em todos os ataques corpo a corpo enquanto estiver montada.",
+                    3: "Você pode fazer um ataque de INVESTIDA MONTADA quando montada. Isso combina uma ação de movimento completo da montaria (pelo menos da distância CURTA até AO ALCANCE DAS MÃOS) com um ataque corpo a corpo seu. Você pode adicionar um Dado de Artefato D8 ao ataque corpo a corpo."
+                }
+            },
+            "Mestre em Escudos": {
+                ranks: {
+                    1: "Você é uma com o seu escudo. As suas rolagens de BLOQUEAR são modificadas em +1 quando você usa um escudo para isso.",
+                    2: "Você pode usar o escudo para GOLPEAR como uma ação rápida. O Dano de Arma é 1 (esmagamento).",
+                    3: "Você pode adicionar um Dado de Artefato D8 para todas as rolagens de BLOQUEAR quando usar um escudo para isso."
+                }
+            },
+            "Mestre em Espadas": {
+                ranks: {
+                    1: "Você tem praticado com uma espada em mãos desde que era criança. Os seus ataques e rolagens de BLOQUEAR são modificados em +1 ao usar uma espada.",
+                    2: "Você pode GOLPEAR dois inimigos com sua espada usando uma única ação. Role separadamente para os dois ataques.",
+                    3: "Você pode adicionar um Dado de Artefato D8 para todos os seus ataques e rolagens de BLOQUEAR com uma espada."
+                }
+            },
+            "Mestre em Facas": {
+                ranks: {
+                    1: "Você é letal com uma faca na mão. Suas rolagens de ataque são modificadas em +1 quando você luta com uma faca ou adaga.",
+                    2: "Você pode ESTOCAR como uma ação rápida usando uma faca ou adaga.",
+                    3: "Você pode adicionar um Dado de Artefato D8 para todos os seus ataques com uma faca ou adaga."
+                }
+            },
+            "Mestre em Lanças": {
+                ranks: {
+                    1: "Uma poderosa lança pode matar até mesmo o maior dos monstros. Você recebe +1 quando ataca com uma lança, pique, alabarda ou tridente.",
+                    2: "Ao brandir uma lança, pique, alabarda ou tridente, você pode imediatamente atingir um inimigo que se mova da distância PERTO para AO ALCANCE DAS MÃOS em relação a você. O ataque conta como uma ação da sua rodada, mas ele quebra a ordem de iniciativa e ocorre antes que o inimigo possa atacar você.",
+                    3: "Você pode adicionar um Dado de Artefato D8 para ataques com uma lança, pique, alabarda ou tridente."
+                }
+            },
+            "Mestre em Machados": {
+                ranks: {
+                    1: "Nada racha um escudo ou uma cabeça como um poderoso machado. Todas as suas rolagens de ataque com machados são modificadas em +1.",
+                    2: "Quando você atinge um inimigo com seu machado e causa pelo menos um ponto de dano, você automaticamente causa um ferimento grave (corte). O ferimento grave em si não deixa seu oponente Acabado a não ser que o mate instantaneamente, é claro. Não pode ser usado em monstros ou animais.",
+                    3: "Você pode adicionar um Dado de Artefato D8 para todos as suas rolagens de ataque com machados."
+                }
+            },
+            "Mestre em Martelos": {
+                ranks: {
+                    1: "Afundar cabeças com um vigoroso martelo de guerra é a sua ideia de um belo dia. Todas as suas rolagens de ataque com armas corpo a corpo que causam dano de ESMAGAMENTO recebem +1.",
+                    2: "Todos os ataques com armas de ESMAGAMENTO causam ao menos 1 ponto de dano, mesmo que a armadura do alvo absorva todo o dano.",
+                    3: "Você pode adicionar um Dado de Artefato D8 para todos os ataques com armas de ESMAGAMENTO."
+                }
+            },
+            "Pés Firmes": {
+                ranks: {
+                    1: "Você tem um excelente equilíbrio e não pode ser derrubada com facilidade. DERRUBAR você no chão requer dois X em vez de um.",
+                    2: "Você não pode ser DERRUBADA no chão.",
+                    3: "Você pode se levantar de uma posição caída sem gastar ações. Isso ainda precisa acontecer na sua vez durante a rodada."
+                }
+            },
+            "Pés Ligeiros": {
+                ranks: {
+                    1: "Você tem passos rápidos e ágeis. Você pode ESQUIVAR de graça uma vez a cada rodada de combate. A ESQUIVA extra não conta para o total das suas ações na rodada.",
+                    2: "Você recebe um bônus de +1 sempre que ESQUIVAR.",
+                    3: "Você pode ESQUIVAR uma quantidade ilimitada de vezes por rodada de combate, mas apenas uma vez contra cada ataque. Não importa quantas vezes você ESQUIVA, nunca contará como mais de uma ação."
+                }
+            },
+            "Pescador": {
+                ranks: {
+                    1: "Você dominou a arte de tirar peixes de rios e lagos. A sua rolagem de SOBREVIVÊNCIA é modificada em +1 quando você PESCA.",
+                    2: "Pescar relaxa você. Um Quarto de Dia gasto PESCANDO conta como DESCANSAR.",
+                    3: "A quantidade de PEIXES que você pega é dobrada."
+                }
+            },
+            "Rápido como um Raio": {
+                ranks: {
+                    1: "Você reage com a velocidade de uma serpente. Você pode comprar duas cartas de iniciativa em vez de uma durante a compra de iniciativa. Escolha a que você deseja usar e embaralhe a outra no baralho antes dos demais comprarem.",
+                    2: "Você pode comprar uma carta adicional na compra de iniciativa (para um total de três cartas) e escolher qual você deseja usar.",
+                    3: "Você pode comprar uma carta adicional na compra de iniciativa (para um total de quatro cartas) e escolher qual você deseja usar."
+                }
+            },
+            "Resistente a Dor": {
+                ranks: {
+                    1: "Você aprendeu a resistir à dor. Se você recebe um único ponto de dano de um ataque corpo a corpo, você não perde o seu ataque no mesmo passo (Combate Avançado).",
+                    2: "Você nunca perde o seu ataque por causa de dor.",
+                    3: "Você recupera um ponto perdido de Agilidade, Astúcia ou Empatia para cada ponto de dano de Força que você recebe."
+                }
+            },
+            "Ruína dos Dragões": {
+                ranks: {
+                    1: "Ruína dos Dragões é o título dado àqueles que procuram honra e fama matando bestas e monstros. Todos os seus ataques contra monstros são modificados em +1.",
+                    2: "Seus ataques contra monstros causam 1 ponto adicional de dano.",
+                    3: "Você pode adicionar um Dado de Artefato D8 para rolagens de ataque contra monstros."
+                }
+            },
+            "Sangue Frio": {
+                ranks: {
+                    1: "Você é completamente insensível e pode matar inimigos indefesos sem nem mesmo hesitar. Você pode realizar um GOLPE DE MISERICÓRDIA sem precisar rolar os dados.",
+                    2: "Como a categoria 1, mas você também não precisa gastar um Ponto de Força de Vontade ou sofrer dano na Empatia.",
+                    3: "Como a categoria 2, mas você também recupera um ponto perdido de Empatia quando realiza um GOLPE DE MISERICÓRDIA."
+                }
+            },
+            "Saque Rápido": {
+                ranks: {
+                    1: "Você saca armas mais rápido do que os inimigos conseguem piscar. Você pode sacar uma arma LEVE sem gastar uma ação. Isso inclui pegar uma arma do chão.",
+                    2: "Como a categoria 1, mas também aplicável para armas normais.",
+                    3: "Como a categoria 2, mas também aplicável para armas PESADAS."
+                }
+            },
+            "Sexto Sentido": {
+                ranks: {
+                    1: "Você sente a sua nuca arrepiar quando inimigos espreitam. A sua rolagem de PATRULHA é modificada em +1 quando um inimigo tenta emboscar você ou realizar um ataque furtivo.",
+                    2: "Quando você percebe uma emboscada ou um ataque furtivo, você também vê quantos atacantes são, qual a ascendência deles e que armas eles usam.",
+                    3: "Você pode adicionar um Dado de Artefato D8 para a sua rolagem de PATRULHA ao tentar encontrar uma emboscada ou um ataque furtivo."
+                }
+            },
+            "Sortudo": {
+                ranks: {
+                    1: "Não importa o quão ruins sejam as probabilidades, você sempre se safa ilesa. Quando você sofre um ferimento grave, você pode rolar outra vez. A rolagem mais baixa é a que conta.",
+                    2: "Como a categoria 1, mas você também reverte a rolagem do D66 para o ferimento grave uma rolagem de 61 se torna 16, por exemplo.",
+                    3: "Quando você sofre um ferimento grave, você pode escolher livremente qual o ferimento na lista relevante."
+                }
+            },
+            "default": {
+                ranks: {
+                    1: "Efeito da Categoria 1 (Consulte o livro pág. 72-82).",
+                    2: "Efeito da Categoria 2 (Consulte o livro pág. 72-82).",
+                    3: "Efeito da Categoria 3 (Consulte o livro pág. 72-82)."
+                }
+            }
         },
 
         spells: {
